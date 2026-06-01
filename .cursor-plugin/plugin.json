@@ -1,0 +1,24 @@
+{
+  "name": "descript",
+  "displayName": "Descript",
+  "version": "1.0.0",
+  "description": "Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from Cursor.",
+  "author": {
+    "name": "Descript",
+    "email": "support@descript.com"
+  },
+  "homepage": "https://www.descript.com",
+  "repository": "https://github.com/sam-descript/cursor-plugin",
+  "license": "MIT",
+  "keywords": [
+    "descript",
+    "video",
+    "audio",
+    "media",
+    "editing",
+    "transcription",
+    "ai",
+    "mcp"
+  ],
+  "logo": "assets/logo.svg"
+}
