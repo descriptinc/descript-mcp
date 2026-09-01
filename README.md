@@ -29,6 +29,7 @@ Bundles a `descript-workflows` rule with best practices for working with the Des
 
 - **create-video** — Create a new project from media files or URLs
 - **edit-project** — Edit an existing project using AI-powered natural language
+- **publish-project** — Publish a composition to create a shareable link and exported video or audio file
 
 ## Setup
 
