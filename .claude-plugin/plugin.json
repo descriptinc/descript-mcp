@@ -1,0 +1,24 @@
+{
+    "name": "descript",
+    "displayName": "Descript",
+    "version": "1.0.0",
+    "description": "Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from your agent.",
+    "author": {
+        "name": "Descript",
+        "email": "support@descript.com"
+    },
+    "homepage": "https://www.descript.com/api",
+    "repository": "https://github.com/descriptinc/cursor-plugin",
+    "license": "MIT",
+    "keywords": [
+        "descript",
+        "video",
+        "audio",
+        "media",
+        "editing",
+        "transcription",
+        "ai",
+        "mcp"
+    ],
+    "mcpServers": "./mcp.json"
+}

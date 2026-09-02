@@ -1,0 +1,13 @@
+# Descript MCP workflows
+
+Best practices for working with the Descript MCP tools.
+
+- Always use `list_projects` to discover project IDs before editing or importing media. Never guess or fabricate project IDs.
+- Use `get_project` to inspect a project's compositions and media files before making edits.
+- When creating a new project with media, include `add_compositions` so imported media appears on the timeline.
+- When importing into an existing project, omit `add_compositions` unless explicitly asked, to avoid disrupting existing edits.
+- `import_media`, `prompt_project_agent`, and `publish_project` return immediately with a `job_id`. Always follow up with `wait_for_job` to wait for completion.
+- For direct file uploads, use `content_type` and `file_size` instead of `url`. PUT the file to the returned `upload_url` with header `Content-Type: application/octet-stream`.
+- Pass media URLs as-is to `import_media` — do not rewrite Google Drive or Dropbox share links.
+- Use `prompt_project_agent` for any editing task: trimming, rearranging, removing filler words, adding captions, generating AI images/video, importing stock media, and more. Describe the desired edit in natural language.
+- Use `get_project` after edits to verify the result and retrieve composition IDs for publishing.
