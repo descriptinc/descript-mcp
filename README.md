@@ -25,7 +25,7 @@ Full tool reference and auth details: [Descript MCP docs](https://help.descript.
 
 Bundles a `descript-workflows` rule with best practices for working with the Descript tools: discover project IDs with `list_projects` before editing, inspect with `get_project`, pass media URLs to `import_media` as-is, use `prompt_project_agent` for natural-language edits, and always follow the async tools (`import_media`, `prompt_project_agent`, `publish_project`) with `wait_for_job`.
 
-The rule is Cursor-format (`rules/descript-workflows.mdc`). Gemini CLI gets the same guidance from `GEMINI.md`. Claude Code has no rules concept, so it relies on the bundled skills for the same workflows.
+The rule is Cursor-format (`rules/descript-workflows.mdc`). Antigravity reads the same guidance from `AGENTS.md` at the repo root. Claude Code has no rules concept, so it relies on the bundled skills for the same workflows.
 
 ### Skills
 
@@ -80,15 +80,28 @@ claude mcp add --transport http descript https://api.descript.com/v2/mcp
 
 The `descript-workflows` rule is Cursor-format and does not load in Claude Code; the same guidance is carried by the bundled skills.
 
-### Gemini CLI
+### Antigravity
 
-This repo is also a Gemini CLI extension (`gemini-extension.json`), bringing the MCP server and the workflow guidance (`GEMINI.md`) together. Install it from this repository:
+Google's [Antigravity](https://antigravity.google) reads project context straight from this repo — no install step. Open the repo as your Antigravity workspace and it picks up the `AGENTS.md` workflow guidance at the root. Antigravity also reads the same `SKILL.md` format as Claude Code, so the bundled skills apply there too.
 
-```
-gemini extensions install https://github.com/descriptinc/cursor-plugin
-```
+The MCP server is added separately, in Antigravity's own config. Antigravity does not reliably load an MCP server from a repo-committed file — project-local `mcpServers` are currently discovered but ignored, so the server has to live in the user-level config, added through the UI:
 
-Gemini registers the `descript` MCP server and loads `GEMINI.md` into context. When the server first connects, sign in to Descript and choose a Drive.
+1. In the Agent panel, open the `...` (Additional Options) menu → **MCP Servers** → **Manage MCP Servers** → **View raw config**.
+2. Add the `descript` server under `mcpServers`. Antigravity uses the `serverUrl` key for remote HTTP servers (not `url`):
+
+   ```json
+   {
+       "mcpServers": {
+           "descript": {
+               "serverUrl": "https://api.descript.com/v2/mcp"
+           }
+       }
+   }
+   ```
+
+3. Save, then reconnect. When the server first connects, sign in to Descript and choose a Drive.
+
+The raw config file lives under your home directory (`~/.gemini/config/mcp_config.json` on recent builds; older builds used `~/.gemini/antigravity/mcp_config.json`) — using **View raw config** avoids depending on the exact path.
 
 ### Other MCP clients
 
