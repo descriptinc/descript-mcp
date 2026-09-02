@@ -9,8 +9,16 @@ descript-workflows:
 - Use `get_project` to inspect a project's compositions and media files before making edits.
 - When creating a new project with media, include `add_compositions` so imported media appears on the timeline.
 - When importing into an existing project, omit `add_compositions` unless explicitly asked, to avoid disrupting existing edits.
-- `import_media`, `prompt_project_agent`, and `publish_project` return immediately with a `job_id`. Always follow up with `wait_for_job` to wait for completion.
+- `import_media`, `prompt_project_agent`, and `publish_project` return immediately with a `job_id`. Always follow up with `wait_for_job` — see "Waiting on async jobs" below for the polling loop.
 - For direct file uploads, use `content_type` and `file_size` instead of `url`. PUT the file to the returned `upload_url` with header `Content-Type: application/octet-stream`.
 - Pass media URLs as-is to `import_media` — do not rewrite Google Drive or Dropbox share links.
 - Use `prompt_project_agent` for any editing task: trimming, rearranging, removing filler words, adding captions, generating AI images/video, importing stock media, and more. Describe the desired edit in natural language.
+- If a project has more than one composition, pass `composition_id` explicitly to `prompt_project_agent`, `export_transcript`, and `publish_project` — do not rely on the default.
 - Use `get_project` after edits to verify the result and retrieve composition IDs for publishing.
+
+Waiting on async jobs:
+
+- Wait by looping `wait_for_job` with `wait_seconds: 20` (set it explicitly — don't rely on the default) until the job reaches a terminal state. Surface `progress.label` and `percent` after each poll so the user sees the job advancing.
+- A timeout error (code `-32001`) means the job is still running, not failed. Poll the same `job_id` again — never re-issue the original request in response to a timeout.
+- Never start a second agent job for the same clip while one is still in flight.
+- `wait_seconds: 0` returns the current status immediately — use it for a plain status check, not to wait.
