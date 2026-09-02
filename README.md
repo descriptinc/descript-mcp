@@ -1,12 +1,12 @@
-# Descript — Cursor Plugin
+# Descript MCP
 
-Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from Cursor.
+Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from your agent.
 
 ## What's included
 
 ### MCP Server
 
-Connects to the [Descript API](https://www.descript.com/api) over MCP, giving Cursor access to:
+Connects to the [Descript API](https://www.descript.com/api) over MCP, giving your agent access to:
 
 - **import_media** — Import media into a project via URL or direct file upload
 - **import_drive_media** — Import media from a connected Google Drive
@@ -39,4 +39,4 @@ Bundles a `descript-workflows` rule with best practices for working with the Des
 ## Requirements
 
 - A [Descript](https://www.descript.com) account
-- Cursor with MCP support
+- An agent harness with MCP support
