@@ -1,0 +1,14 @@
+{
+    "name": "descript",
+    "description": "Descript MCP integration — edit video and audio by editing text, from your agent.",
+    "owner": {
+        "name": "Descript"
+    },
+    "plugins": [
+        {
+            "name": "descript",
+            "source": ".",
+            "description": "Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from your agent."
+        }
+    ]
+}

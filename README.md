@@ -21,9 +21,11 @@ Connects to the [Descript API](https://www.descript.com/api) over MCP, giving ag
 
 Full tool reference and auth details: [Descript MCP docs](https://help.descript.com/api-and-mcp/mcp).
 
-### Rules
+### Rules / context
 
 Bundles a `descript-workflows` rule with best practices for working with the Descript tools: discover project IDs with `list_projects` before editing, inspect with `get_project`, pass media URLs to `import_media` as-is, use `prompt_project_agent` for natural-language edits, and always follow the async tools (`import_media`, `prompt_project_agent`, `publish_project`) with `wait_for_job`.
+
+The rule is Cursor-format (`rules/descript-workflows.mdc`). Gemini CLI gets the same guidance from `GEMINI.md`. Claude Code has no rules concept, so it relies on the bundled skills for the same workflows.
 
 ### Skills
 
@@ -59,15 +61,38 @@ cursor://anysphere.cursor-deeplink/mcp/install?name=Descript&config=eyJ1cmwiOiJo
 
 The deep link installs only the MCP server; the rule and skills come from the plugin.
 
-### Claude Code and other MCP clients
+### Claude Code
 
-These harnesses don't read the Cursor plugin format, so add the remote MCP server on its own. In Claude Code:
+This repo is also a Claude Code plugin, so installing it brings the MCP server and the skills together. Add the repo as a marketplace, then install the plugin:
+
+```
+/plugin marketplace add descriptinc/cursor-plugin
+/plugin install descript@descript
+```
+
+Claude Code registers the `descript` MCP server and auto-discovers the skills. When the server first connects, sign in to Descript and choose a Drive.
+
+If you only want the server without the skills, add it on its own:
 
 ```
 claude mcp add --transport http descript https://api.descript.com/v2/mcp
 ```
 
-Any other MCP client works the same way — add a remote (HTTP) server pointed at `https://api.descript.com/v2/mcp` with OAuth. See [Connect Descript to any AI assistant](https://help.descript.com/api-and-mcp/mcp-custom) for the general flow. The rule and skills in this repo are Cursor-format and don't travel with a bare MCP connection.
+The `descript-workflows` rule is Cursor-format and does not load in Claude Code; the same guidance is carried by the bundled skills.
+
+### Gemini CLI
+
+This repo is also a Gemini CLI extension (`gemini-extension.json`), bringing the MCP server and the workflow guidance (`GEMINI.md`) together. Install it from this repository:
+
+```
+gemini extensions install https://github.com/descriptinc/cursor-plugin
+```
+
+Gemini registers the `descript` MCP server and loads `GEMINI.md` into context. When the server first connects, sign in to Descript and choose a Drive.
+
+### Other MCP clients
+
+Any other MCP client works by adding the remote server on its own — a remote (HTTP) server pointed at `https://api.descript.com/v2/mcp` with OAuth. See [Connect Descript to any AI assistant](https://help.descript.com/api-and-mcp/mcp-custom) for the general flow. The `descript-workflows` rule and the skills in this repo are harness-specific bundle content and don't travel with a bare MCP connection.
 
 ### Claude and ChatGPT
 
