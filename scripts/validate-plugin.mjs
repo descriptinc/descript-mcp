@@ -97,7 +97,9 @@ function extractPathValues(value) {
 async function validateReferencedPath(pluginDir, fieldName, pathValue) {
   if (pathValue.startsWith("http://") || pathValue.startsWith("https://")) return;
   if (!isSafeRelativePath(pathValue)) {
-    addError(`field "${fieldName}" has invalid path "${pathValue}". Use a relative path without ".." or absolute prefixes.`);
+    addError(
+      `field "${fieldName}" has invalid path "${pathValue}". Use a relative path without ".." or absolute prefixes.`,
+    );
     return;
   }
   if (!(await pathExists(path.resolve(pluginDir, pathValue)))) {
@@ -123,8 +125,18 @@ async function validateFrontmatterFile(filePath, componentName, requiredKeys) {
 async function validateComponentFrontmatter(pluginDir) {
   const checks = [
     { dir: "rules", name: "rule", keys: ["description"], exts: [".md", ".mdc", ".markdown"] },
-    { dir: "agents", name: "agent", keys: ["name", "description"], exts: [".md", ".mdc", ".markdown"] },
-    { dir: "commands", name: "command", keys: ["name", "description"], exts: [".md", ".mdc", ".markdown", ".txt"] },
+    {
+      dir: "agents",
+      name: "agent",
+      keys: ["name", "description"],
+      exts: [".md", ".mdc", ".markdown"],
+    },
+    {
+      dir: "commands",
+      name: "command",
+      keys: ["name", "description"],
+      exts: [".md", ".mdc", ".markdown", ".txt"],
+    },
   ];
   for (const { dir, name, keys, exts } of checks) {
     const target = path.join(pluginDir, dir);
@@ -152,7 +164,9 @@ async function main() {
   if (!manifest) return summarizeAndExit();
 
   if (typeof manifest.name !== "string" || !pluginNamePattern.test(manifest.name)) {
-    addError('"name" in plugin.json must be lowercase and use only alphanumerics, hyphens, and periods.');
+    addError(
+      '"name" in plugin.json must be lowercase and use only alphanumerics, hyphens, and periods.',
+    );
   }
   if (!manifest.description || typeof manifest.description !== "string") {
     addError('"description" in plugin.json is required.');
@@ -160,7 +174,11 @@ async function main() {
   if (!manifest.version || typeof manifest.version !== "string") {
     addWarning('"version" in plugin.json is recommended.');
   }
-  if (!manifest.author || typeof manifest.author.name !== "string" || manifest.author.name.length === 0) {
+  if (
+    !manifest.author ||
+    typeof manifest.author.name !== "string" ||
+    manifest.author.name.length === 0
+  ) {
     addWarning('"author.name" in plugin.json is recommended.');
   }
 
