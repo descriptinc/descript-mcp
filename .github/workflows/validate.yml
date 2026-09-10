@@ -24,6 +24,9 @@ jobs:
             node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "ok $f"
           done
 
+      - name: Syntax-check scripts
+        run: for f in scripts/*.mjs; do node --check "$f" && echo "ok $f"; done
+
       - name: Validate Cursor plugin
         run: node scripts/validate-plugin.mjs
 
@@ -33,4 +36,4 @@ jobs:
           claude plugin validate .
 
       - name: Check MCP server URL consistency
-        run: sh scripts/check-mcp-url.sh
+        run: node scripts/check-mcp-url.mjs
