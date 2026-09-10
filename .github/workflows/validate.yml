@@ -1,0 +1,36 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 22
+
+      - name: Parse all JSON files
+        run: |
+          set -e
+          for f in $(git ls-files '*.json'); do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "ok $f"
+          done
+
+      - name: Validate Cursor plugin
+        run: node scripts/validate-plugin.mjs
+
+      - name: Validate Claude Code plugin
+        run: |
+          npm install -g @anthropic-ai/claude-code@2.1.267
+          claude plugin validate .
+
+      - name: Check MCP server URL consistency
+        run: sh scripts/check-mcp-url.sh
