@@ -1,0 +1,19 @@
+{
+  "name": "descript-mcp",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-plugin.mjs && node scripts/check-mcp-url.mjs",
+    "lint": "oxlint --deny-warnings",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "check": "npm run lint && npm run fmt:check && npm run validate"
+  },
+  "devDependencies": {
+    "oxfmt": "0.67.0",
+    "oxlint": "1.82.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

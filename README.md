@@ -91,11 +91,11 @@ The MCP server is added separately, in Antigravity's own config. Antigravity doe
 
    ```json
    {
-       "mcpServers": {
-           "descript": {
-               "serverUrl": "https://api.descript.com/v2/mcp"
-           }
+     "mcpServers": {
+       "descript": {
+         "serverUrl": "https://api.descript.com/v2/mcp"
        }
+     }
    }
    ```
 
@@ -118,3 +118,13 @@ Descript ships official connectors in both directories — no server URL needed:
 
 - A [Descript](https://www.descript.com) account
 - An agent harness with MCP support
+
+## Development
+
+```
+npm install
+npm run check   # lint, format check, and plugin validation
+npm run fmt     # apply formatting
+```
+
+CI runs the same checks on every pull request.
