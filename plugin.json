@@ -7,7 +7,7 @@
     "name": "Descript",
     "email": "support@descript.com"
   },
-  "homepage": "https://www.descript.com/api",
+  "homepage": "https://www.descript.com/mcp",
   "repository": "https://github.com/descriptinc/descript-mcp",
   "license": "Apache-2.0",
   "keywords": ["descript", "video", "audio", "media", "editing", "transcription", "ai", "mcp"]

@@ -19,7 +19,7 @@ Connects to the [Descript API](https://www.descript.com/api) over MCP, giving ag
 - **wait_for_job / list_jobs / cancel_job** — Track and manage async jobs
 - **report_upload_status / file_upload_ui** — Support direct file uploads
 
-Full tool reference and auth details: [Descript MCP docs](https://help.descript.com/api-and-mcp/mcp).
+Full tool reference and auth details: [Descript MCP docs](https://www.descript.com/mcp).
 
 ### Rules / context
 
