@@ -1,7 +1,8 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "descript": {
-      "type": "http",
+      "type": "streamable-http",
       "url": "https://api.descript.com/v2/mcp"
     }
   }
