@@ -9,7 +9,7 @@
   },
   "homepage": "https://www.descript.com/api",
   "repository": "https://github.com/descriptinc/descript-mcp",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "keywords": ["descript", "video", "audio", "media", "editing", "transcription", "ai", "mcp"],
   "mcpServers": "./mcp.json"
 }

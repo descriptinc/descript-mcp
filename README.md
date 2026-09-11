@@ -114,6 +114,10 @@ Descript ships official connectors in both directories — no server URL needed:
 - **Claude** — add **Descript** from the [Anthropic connector directory](https://claude.ai/directory/connectors/descript). See [Connect Descript to Claude](https://help.descript.com/api-and-mcp/mcp-claude).
 - **ChatGPT** — add the Descript app from the [ChatGPT app marketplace](https://chatgpt.com/apps/descript/asdk_app_69f0dc45f6048191876c14c1016fe778). See [Connect Descript to ChatGPT](https://help.descript.com/api-and-mcp/mcp-chatgpt).
 
+### Official sources
+
+Only the published server endpoint (`https://api.descript.com/v2/mcp`) and Descript's official marketplace listings — the ChatGPT app, the Claude connector, and the Cursor plugin linked above — are official. Any other listing, connector, or fork is not affiliated with or endorsed by Descript.
+
 ## Requirements
 
 - A [Descript](https://www.descript.com) account
@@ -128,3 +132,13 @@ npm run fmt     # apply formatting
 ```
 
 CI runs the same checks on every pull request.
+
+This repository is source-available under the included license. We are not currently accepting external code contributions or pull requests.
+
+## License and legal
+
+Licensed under the [Apache License 2.0](LICENSE).
+
+Descript's names, logos, and brand features are trademarks — see [TRADEMARKS.md](TRADEMARKS.md) for what you may and may not do with them.
+
+Use of the hosted Descript MCP server and API is subject to Descript's [Terms of Service](https://www.descript.com/terms).
