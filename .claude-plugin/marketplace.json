@@ -1,6 +1,6 @@
 {
   "name": "descript",
-  "description": "Descript MCP integration — edit video and audio by editing text, from your agent.",
+  "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
   "owner": {
     "name": "Descript"
   },
@@ -8,7 +8,7 @@
     {
       "name": "descript",
       "source": ".",
-      "description": "Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from your agent."
+      "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent."
     }
   ]
 }

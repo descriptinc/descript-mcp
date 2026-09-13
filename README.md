@@ -8,16 +8,12 @@ Edit video and audio by editing text. Import media, create projects, and use AI 
 
 Connects to the [Descript API](https://www.descript.com/api) over MCP, giving agents access to:
 
-- **import_media** — Import media into a project via URL or direct file upload
-- **import_drive_media** — Import media from a connected Google Drive
-- **prompt_project_agent** — Edit with Underlord, our AI co-editor that edits projects with natural language (trim, add captions, remove filler words, and so much more)
-- **publish_project** — Publish compositions as shareable video or audio
-- **export_transcript** — Export a project's transcript
-- **export_timeline** — Export a project's timeline
-- **list_projects / get_project** — Discover and inspect projects and their compositions, media, and metadata
-- **list_folders / get_drive_info** — Browse folders and inspect a connected Drive
-- **wait_for_job / list_jobs / cancel_job** — Track and manage async jobs
-- **report_upload_status / file_upload_ui** — Support direct file uploads
+- **Discover** — `list_projects` / `get_project` inspect projects and their compositions, media, and metadata; `list_folders` / `get_drive_info` browse folders and inspect a connected Drive
+- **Import** — `import_media` (via URL or direct file upload), `import_drive_media` (from a connected Google Drive), `file_upload_ui` (direct file uploads)
+- **Edit** — `prompt_project_agent` edits with Underlord, our AI co-editor, using natural language (trim, add captions, remove filler words, and so much more)
+- **Publish** — `publish_project` publishes a composition as a shareable link and exported video or audio
+- **Export** — `export_transcript` exports a project's transcript; `export_timeline` exports a Premiere Pro / DaVinci Resolve timeline
+- **Jobs** — `wait_for_job` / `list_jobs` / `cancel_job` track and manage async jobs; `report_upload_status` reports direct-upload progress
 
 Full tool reference and auth details: [Descript MCP docs](https://www.descript.com/mcp).
 
@@ -32,10 +28,14 @@ The rule is Cursor-format (`rules/descript-workflows.mdc`). Antigravity reads th
 - **create-video** — Create a new project from media files or URLs
 - **edit-project** — Edit an existing project using AI-powered natural language
 - **publish-project** — Publish a composition to create a shareable link and exported video or audio file
+- **export-transcript** — Export a project's transcript as a downloadable file
+- **export-timeline** — Export a project's timeline for Premiere Pro or DaVinci Resolve
 
 ## Setup
 
 The Descript MCP authenticates with OAuth — no API token. On first connection you sign in to Descript and pick the [Drive](https://help.descript.com/descript-tour/drive-view) the agent can access. To switch Drives later, log out of Descript on the web and reconnect.
+
+Install from an official marketplace listing only: let it register the server, sign in with OAuth, pick a Drive, then confirm the connection with `get_drive_info`. Don't also add a second, custom Descript MCP server by hand — a duplicate connection means conflicting sessions.
 
 Every MCP client points at the same remote server:
 
