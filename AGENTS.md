@@ -2,7 +2,7 @@
 
 Best practices for working with the Descript MCP tools.
 
-- Always use `list_projects` to discover project IDs before editing or importing media. Never guess or fabricate project IDs.
+- Use `search_drive` to find projects, folders, media, layout packs, and transcript matches across the connected Drive (by name or spoken/content text). Use `list_projects` to paginate or filter the project list (folder, dates, creator). Never guess or fabricate project IDs.
 - Use `get_project` to inspect a project's compositions and media files before making edits.
 - When creating a new project with media, include `add_compositions` so imported media appears on the timeline.
 - When importing into an existing project, omit `add_compositions` unless explicitly asked, to avoid disrupting existing edits.

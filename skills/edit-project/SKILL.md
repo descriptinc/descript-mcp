@@ -13,7 +13,7 @@ description: Edit an existing Descript project with Underlord, Descript's AI co-
 
 ## Instructions
 
-1. Use `list_projects` to find the project. If the user provides a name, filter by it.
+1. Use `search_drive` to find the project when the user describes it by name or spoken content. Use `list_projects` (filter by name if provided) when you need a paginated project list rather than a search.
 2. Use `get_project` with the project ID to inspect its current state — compositions, media files, and structure.
 3. Confirm with the user which composition to edit if the project has multiple compositions.
 4. Use `prompt_project_agent` to edit with Underlord, Descript's AI co-editor, passing the project ID, composition ID, and a clear natural language prompt describing the desired edits. It returns a `conversation_id` — save it and reuse it on follow-up edits anywhere in the same project to continue the same thread, including edits that target a different composition; pass the target `composition_id` alongside it to say which clip to edit. Don't start a second agent job for the same clip while one is still in flight.

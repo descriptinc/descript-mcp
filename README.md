@@ -8,7 +8,7 @@ Edit video and audio by editing text. Import media, create projects, and use AI 
 
 Connects to the [Descript API](https://www.descript.com/api) over MCP, giving agents access to:
 
-- **Discover** — `list_projects` / `get_project` inspect projects and their compositions, media, and metadata; `list_folders` / `get_drive_info` browse folders and inspect a connected Drive
+- **Discover** — `search_drive` finds projects, folders, media, layout packs, and transcript matches across the connected Drive; `list_projects` / `get_project` inspect projects and their compositions, media, and metadata; `list_folders` / `get_drive_info` browse folders and inspect a Drive
 - **Import** — `import_media` (via URL or direct file upload), `import_drive_media` (from a connected Google Drive), `file_upload_ui` (direct file uploads)
 - **Edit** — `prompt_project_agent` edits with Underlord, our AI co-editor, using natural language (trim, add captions, remove filler words, and so much more)
 - **Publish** — `publish_project` publishes a composition as a shareable link and exported video or audio
@@ -19,7 +19,7 @@ Full tool reference and auth details: [Descript MCP docs](https://www.descript.c
 
 ### Rules / context
 
-Bundles a `descript-workflows` rule with best practices for working with the Descript tools: discover project IDs with `list_projects` before editing, inspect with `get_project`, pass media URLs to `import_media` as-is, use `prompt_project_agent` for natural-language edits, and always follow the async tools (`import_media`, `prompt_project_agent`, `publish_project`) with `wait_for_job`.
+Bundles a `descript-workflows` rule with best practices for working with the Descript tools: find items with `search_drive` (or paginate projects with `list_projects`) before editing, inspect with `get_project`, pass media URLs to `import_media` as-is, use `prompt_project_agent` for natural-language edits, and always follow the async tools (`import_media`, `prompt_project_agent`, `publish_project`) with `wait_for_job`.
 
 The rule is Cursor-format (`rules/descript-workflows.mdc`). Antigravity reads the same guidance from `AGENTS.md` at the repo root. Claude Code has no rules concept, so it relies on the bundled skills for the same workflows.
 
