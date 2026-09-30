@@ -42,6 +42,9 @@ jobs:
       - name: Validate portable + OpenAI plugin
         run: node scripts/validate-portable-plugin.mjs
 
+      - name: Validator regression tests
+        run: npm test
+
       - name: Validate Claude Code plugin
         run: |
           npm install -g @anthropic-ai/claude-code@2.1.267

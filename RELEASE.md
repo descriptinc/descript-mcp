@@ -21,7 +21,8 @@ When updating the live OpenAI app from this repo:
   the downloaded release's package identity (`app-69f0dc45f6048191876c14c1016fe778`)
   and its existing MCP configuration. Use this repo only as the content source
   for the listing metadata (`extensions.com.openai.interface` in `plugin.json`),
-  the skills, and the skill→MCP dependency map (`agents/openai.yaml`).
+  the skills, and each skill's MCP dependency file
+  (`skills/<skill>/agents/openai.yaml`).
 - **Do not rename the live plugin or create a new listing.** Renaming the live
   app or spinning up a second listing would orphan the existing app and its
   users.

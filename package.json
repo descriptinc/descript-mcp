@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate-plugin.mjs && node scripts/validate-portable-plugin.mjs && node scripts/check-mcp-url.mjs",
+    "test": "node --test \"test/**/*.test.mjs\"",
     "lint": "oxlint --deny-warnings",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "npm run lint && npm run fmt:check && npm run validate"
+    "check": "npm run lint && npm run fmt:check && npm test && npm run validate"
   },
   "devDependencies": {
     "oxfmt": "0.67.0",
