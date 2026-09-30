@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "descript": {
+      "type": "streamable-http",
+      "url": "https://api.descript.com/v2/mcp"
+    }
+  }
+}

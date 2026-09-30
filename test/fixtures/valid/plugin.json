@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "descript",
+  "version": "1.1.0",
+  "description": "Fixture plugin in the documented portable format.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Descript",
+        "shortDescription": "Edit video by chatting",
+        "longDescription": "Fixture long description.",
+        "developerName": "Descript",
+        "category": "Creativity",
+        "websiteURL": "https://www.descript.com/mcp",
+        "supportURL": "https://help.descript.com/api-and-mcp",
+        "privacyPolicyURL": "https://www.descript.com/privacy",
+        "termsOfServiceURL": "https://www.descript.com/terms",
+        "logo": "./assets/logo.svg",
+        "composerIcon": "./assets/logo.svg",
+        "defaultPrompt": ["Create a video project from these clips"]
+      }
+    }
+  }
+}

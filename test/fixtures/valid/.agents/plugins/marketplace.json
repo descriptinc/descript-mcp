@@ -1,0 +1,20 @@
+{
+  "name": "descript",
+  "interface": {
+    "displayName": "Descript"
+  },
+  "plugins": [
+    {
+      "name": "descript",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Creativity"
+    }
+  ]
+}

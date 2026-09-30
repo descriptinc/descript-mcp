@@ -1,0 +1,7 @@
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "descript"
+      description: "Descript video and audio tools"
+      transport: "streamable_http"
+      url: "https://api.descript.com/v2/mcp"
