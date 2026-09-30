@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "descript",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
   "author": {
     "name": "Descript",
@@ -27,5 +27,30 @@
     "oauth",
     "ai",
     "mcp"
-  ]
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "name": "Descript",
+        "short_description": "Edit video by chatting",
+        "long_description": "Descript lets you edit video and audio by editing text. Import media from URLs or file uploads, create projects, and use Underlord — Descript's AI co-editor — to trim, rearrange, remove filler words, add captions, and more. Publish a shareable link, or export a transcript or a Premiere Pro / DaVinci Resolve timeline, all from your assistant.",
+        "developer_name": "Descript",
+        "category": "Creativity",
+        "website_url": "https://www.descript.com/mcp",
+        "support_url": "https://help.descript.com/api-and-mcp",
+        "privacy_policy_url": "https://www.descript.com/privacy",
+        "terms_of_service_url": "https://www.descript.com/terms",
+        "icons": {
+          "default": "assets/logo.svg"
+        },
+        "starter_prompts": [
+          "Create a video project from these clips and remove the filler words",
+          "Publish my project as a shareable video link",
+          "Export my project's transcript as an SRT file"
+        ]
+      }
+    }
+  }
 }

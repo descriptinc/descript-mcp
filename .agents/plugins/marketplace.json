@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/marketplace.schema.json",
+  "name": "descript",
+  "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
+  "owner": {
+    "name": "Descript"
+  },
+  "plugins": [
+    {
+      "name": "descript",
+      "source": ".",
+      "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
+      "manifest": "./plugin.json",
+      "auth": {
+        "type": "oauth",
+        "instructions": "Sign in to Descript on first connect and choose the Drive the agent can access."
+      }
+    }
+  ]
+}

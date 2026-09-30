@@ -103,6 +103,17 @@ The MCP server is added separately, in Antigravity's own config. Antigravity doe
 
 The raw config file lives under your home directory (`~/.gemini/config/mcp_config.json` on recent builds; older builds used `~/.gemini/antigravity/mcp_config.json`) — using **View raw config** avoids depending on the exact path.
 
+### Codex
+
+This repo ships a portable manifest (`plugin.json` + `mcp.json`) and a repo marketplace entry at `.agents/plugins/marketplace.json`, so Codex can install the whole plugin — the `descript` MCP server plus the skills — directly from the repository. The package name stays `descript`.
+
+- **From GitHub:** add this repository as a plugin source, then install the `descript` plugin. Codex reads `.agents/plugins/marketplace.json`, registers the `descript` MCP server from `mcp.json`, and picks up the skills.
+- **From a local checkout:** clone the repo and install the `descript` plugin from the local path — the same manifests are read from disk.
+- **Refresh / update:** pull the latest `main` (or re-run the install/update) to pick up new skills and metadata.
+- **OAuth:** on first connect, sign in to Descript and choose the [Drive](https://help.descript.com/descript-tour/drive-view) the agent can access. To switch Drives later, log out of Descript on the web and reconnect.
+
+If you only want the tools without the skills, add just the bare MCP server pointed at `https://api.descript.com/v2/mcp` with OAuth. Install the complete plugin **or** add the bare server — not both. A second, hand-added Descript server alongside the plugin's means two connections and conflicting sessions.
+
 ### Other MCP clients
 
 Any other MCP client works by adding the remote server on its own — a remote (HTTP) server pointed at `https://api.descript.com/v2/mcp` with OAuth. See [Connect Descript to any AI assistant](https://help.descript.com/api-and-mcp/mcp-custom) for the general flow. The `descript-workflows` rule and the skills in this repo are harness-specific bundle content and don't travel with a bare MCP connection.
@@ -131,7 +142,9 @@ npm run check   # lint, format check, and plugin validation
 npm run fmt     # apply formatting
 ```
 
-CI runs the same checks on every pull request.
+CI runs the same checks on every pull request. `npm run validate` covers the Cursor manifest, the portable / OpenAI manifest and skill dependencies, and MCP endpoint consistency; `npm run check` adds lint and format checks.
+
+Maintainers: see [RELEASE.md](RELEASE.md) for how the OpenAI (ChatGPT) listing is refreshed from this repo and how direct installs ship, including the package-identity rules.
 
 This repository is source-available under the included license. We are not currently accepting external code contributions or pull requests.
 

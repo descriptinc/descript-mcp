@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "validate": "node scripts/validate-plugin.mjs && node scripts/check-mcp-url.mjs",
+    "validate": "node scripts/validate-plugin.mjs && node scripts/validate-portable-plugin.mjs && node scripts/check-mcp-url.mjs",
     "lint": "oxlint --deny-warnings",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
