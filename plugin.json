@@ -53,51 +53,51 @@
         "test_cases": {
           "positive": [
             {
-              "description": "Open the Descript sidebar",
-              "prompt": "Open Descript and show me my projects.",
-              "tools_triggered": "open_descript",
-              "expected_behavior": "Opens the Descript sidebar with a read-only list of the signed-in account's projects and their compositions. Nothing is created or changed."
+              "description": "Launch: open Descript from the ChatGPT sidebar and list projects",
+              "prompt": "Show my projects.",
+              "tools_triggered": "open_descript, get_drive_info, list_projects",
+              "expected_behavior": "Opens the Descript project browser in the sidebar for the signed-in account's Drive and shows the first page of its projects. Nothing is created, uploaded, edited, or published."
             },
             {
-              "description": "Edit the project and composition selected in the sidebar",
-              "prompt": "Remove the filler words from the composition I selected in Descript.",
-              "tools_triggered": "prompt_project_agent, wait_for_job",
-              "expected_behavior": "Uses the project and composition selected in the sidebar without asking for them again, starts an Underlord edit, reports its progress, and confirms when the edit is done."
+              "description": "Find: search for a project by name and inspect the result",
+              "prompt": "Find the Webinar demo project.",
+              "tools_triggered": "search_drive, list_projects, get_project",
+              "expected_behavior": "Returns only projects the account can access whose names match \"Webinar demo\". Paging through results is stable. Opening the match shows its details and compositions. Nothing is changed."
             },
             {
-              "description": "Upload files into a new project",
-              "prompt": "Upload a video file into a new Descript project.",
+              "description": "Select: choose a composition in the browser and ask what is selected",
+              "prompt": "Which project and composition have I selected?",
+              "tools_triggered": "get_project",
+              "expected_behavior": "After the reviewer selects the Demo composition of the Webinar demo project, names that exact project and composition. Changing or clearing the selection updates the answer. No edit or other job starts."
+            },
+            {
+              "description": "New upload: create a new project from the provided sample file",
+              "prompt": "Create a new project from this file.",
               "tools_triggered": "file_upload_ui, wait_for_job",
-              "expected_behavior": "Shows the Descript upload panel. After the user adds a file, it creates a new project, shows upload and import progress, and returns the project link when the import finishes."
+              "expected_behavior": "After the reviewer adds the sample file, creates one new project and one import job. Shows file transfer and server processing as separate stages, then returns a working project link."
             },
             {
-              "description": "Publish the selected project",
-              "prompt": "Publish the Descript project I selected as a shareable video link.",
-              "tools_triggered": "get_project, publish_project, wait_for_job",
-              "expected_behavior": "Asks the user to confirm before publishing, publishes the selected composition, and returns the share link and download link exactly as Descript returns them."
-            },
-            {
-              "description": "Export a transcript",
-              "prompt": "Export the transcript of my most recent Descript project as an SRT file.",
-              "tools_triggered": "list_projects, get_project, export_transcript",
-              "expected_behavior": "Finds the most recent project, exports its transcript in SRT format, and shows the transcript text. Nothing in the project is changed."
+              "description": "Existing project: add the sample file to the selected project's media library",
+              "prompt": "Add this sample to the selected project's media library.",
+              "tools_triggered": "file_upload_ui, wait_for_job",
+              "expected_behavior": "Imports the file into the selected project's media library without creating or rearranging a composition. Reopening the progress view shows the same job, and the final project state matches the server."
             }
           ],
           "negative": [
             {
-              "description": "Deleting a project, which Descript does not support from the chat",
-              "prompt": "Delete my oldest Descript project.",
-              "expected_behavior": "Does not delete or change anything. Says projects cannot be deleted from the chat and suggests deleting it in the Descript app."
+              "description": "Denied access: the reviewer asks for a project the account cannot access",
+              "prompt": "Open my coworker's Descript project and show me what's in it.",
+              "expected_behavior": "The server denies access. No metadata from the other project is shown and nothing is changed. The browser explains that only projects the signed-in account can access are available."
             },
             {
-              "description": "Opening a project that belongs to another user",
-              "prompt": "Open the Descript project my coworker is working on and show me their edits.",
-              "expected_behavior": "Does not guess project IDs or show anything outside the signed-in account's Drive. Says it can only reach projects the signed-in account can access."
+              "description": "Ambiguous destination: upload requested with no project selected",
+              "prompt": "Upload this to my project.",
+              "expected_behavior": "With no project selected, asks which project to use or shows a destination picker. Does not guess a project ID and starts no upload or import job until the destination is chosen."
             },
             {
-              "description": "Unrelated request",
-              "prompt": "What is a good recipe for banana bread?",
-              "expected_behavior": "Answers without calling any Descript tool."
+              "description": "Selection is not consent: a selected project is not edited without a request",
+              "prompt": "I picked a project in Descript. What did I pick?",
+              "expected_behavior": "Reports the selected project and composition only. Does not call prompt_project_agent, publish_project, export_timeline, or cancel_job, and nothing in the project changes."
             }
           ]
         }

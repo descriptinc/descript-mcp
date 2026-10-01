@@ -324,9 +324,12 @@ describe("validatePortablePlugin", () => {
       /positive\[0\] "tools_triggered" is required/,
     );
     await expectError(
-      (d) =>
-        editJson(d, "plugin.json", (p) => (cases(p).negative[0].tools_triggered = "get_project")),
-      /negative\[0\] has unsupported key "tools_triggered"/,
+      (d) => editJson(d, "plugin.json", (p) => (cases(p).negative[0].expected_tools = "x")),
+      /negative\[0\] has unsupported key "expected_tools"/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (cases(p).positive[0].expected_output_url = "x")),
+      /positive\[0\] "expected_output_url" must be an https URL/,
     );
     await expectError(
       (d) => editJson(d, "plugin.json", (p) => (cases(p).positive[1].user_prompt = "Hi")),
@@ -367,6 +370,103 @@ describe("validatePortablePlugin", () => {
       /looks like it contains a credential/,
     );
   });
+
+  it("accepts the documented optional fields", async () => {
+    const dir = await fixtureCopy((d) =>
+      editJson(d, "plugin.json", (p) => {
+        const openai = p.extensions["com.openai"];
+        Object.assign(openai.interface, {
+          capabilities: ["Edit video"],
+          brandColor: "#651A39",
+          brandColorDark: "#F2A2C2",
+          logoDark: "./assets/logo.svg",
+        });
+        Object.assign(openai.review, {
+          demo_recording_url: "https://example.com/demo",
+          commerce: false,
+          commerce_description: "No purchases.",
+        });
+        cases(p).negative[0].tools_triggered = "get_project";
+        cases(p).positive[0].file_attachment_urls = ["https://example.com/a.mp4"];
+        Object.assign(openai.publication, {
+          countries: ["US", "GB"],
+          translations: { "fr-FR": { subtitle: "Montage vidéo", description: null } },
+        });
+      }),
+    );
+    assert.deepEqual(await validatePortablePlugin(dir), []);
+  });
+
+  it("rejects package keys the portal cannot submit", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.extensions["com.openai"].apps = {})),
+      /unsupported key "apps"/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.extensions["com.openai"].hooks = {})),
+      /unsupported key "hooks"/,
+    );
+  });
+
+  it("enforces package version and description limits", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.version = "1.2")),
+      /"version" must be a semantic version/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.description = "d".repeat(1025))),
+      /"description" is 1025 chars; max is 1024/,
+    );
+  });
+
+  it("rejects malformed optional listing fields", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (iface(p).brandColor = "#FFFFF0")),
+      /"brandColor" must have at least 2:1 contrast/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (iface(p).defaultPrompt = ["Ask @descript"])),
+      /must not contain an @mention/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (iface(p).screenshots = ["./assets/logo.svg"])),
+      /screenshots\[0\] must be a PNG or JPEG/,
+    );
+  });
+
+  it("rejects malformed review and publication fields", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (review(p).demo_recording_url = "http://x.co")),
+      /"demo_recording_url" must be an https URL/,
+    );
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) => (p.extensions["com.openai"].publication.countries = ["us"]),
+        ),
+      /"countries" must be an array of uppercase country codes/,
+    );
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) =>
+            (p.extensions["com.openai"].publication.translations = {
+              "ja-JP": { subtitle: "s".repeat(31) },
+            }),
+        ),
+      /translations\.ja-JP\.subtitle is 31 chars; max is 30/,
+    );
+  });
+
+  it("requires exactly one MCP server for plugin-level test cases", () =>
+    expectError(
+      (d) => editJson(d, "mcp.json", (m) => (m.mcpServers.other = { ...m.mcpServers.descript })),
+      /must declare exactly one MCP server/,
+    ));
 
   it("rejects a hyphen/underscore mix-up in root mcp.json", () =>
     expectError(

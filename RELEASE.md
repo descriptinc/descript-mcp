@@ -40,11 +40,22 @@ package changes live in `plugin.json` under `extensions["com.openai"]`:
 - `interface`: listing copy, including the sidebar.
 - `review.test_cases`: exactly 5 `positive` cases (`description`, `prompt`,
   `tools_triggered`, `expected_behavior`) and 3 `negative` cases
-  (`description`, `prompt`, `expected_behavior`). `tools_triggered` lists exact
-  MCP tool names, comma-separated.
-- `publication.release_notes`: the 1.2.0 release notes.
+  (`description`, `prompt`, and, by repo rule, `expected_behavior`).
+  `tools_triggered` lists exact MCP tool names, comma-separated. The cases
+  follow the reviewer table in the extension v1 plan and need a reviewer Drive
+  with a "Webinar demo" project, a "Demo" composition, an empty-result search,
+  and a small sample media file.
+- `review.demo_recording_url`: optional in the ZIP but required before MCP
+  review. Omitting it keeps the value saved in the portal, so set it here or in
+  **Review details** once the walkthrough video exists.
+- `review.commerce` is optional. Omitting it keeps the portal's saved value.
+- `publication.release_notes`: the 1.2.0 release notes. `countries` is omitted
+  on purpose so existing country targeting is preserved.
 
-`scripts/validate-portable-plugin.mjs` enforces these shapes and counts.
+`scripts/validate-portable-plugin.mjs` enforces the documented field set,
+shapes, counts, and limits from
+<https://developers.openai.com/plugins/deploy/submission#manifest-fields> and
+<https://developers.openai.com/plugins/deploy/submission-errors>.
 
 Never commit reviewer credentials, test-account details, or reviewer
 instructions. Enter them in the submission portal only. The validator rejects
@@ -57,12 +68,16 @@ shipped name differs, update `tools_triggered` before building the ZIP.
 Release order:
 
 1. **Ship the server first.** The sidebar tools (`open_descript` and the
-   updated `file_upload_ui` flow) must be live on
-   `https://api.descript.com/v2/mcp` and rescanned with the portal's Scan Tools
-   step before you submit the package. Review tests the live server.
-2. **One review at a time.** Only one review can be active per plugin. Wait
-   until the 1.1.0 review finishes (approved or rejected) before submitting
-   1.2.0.
+   updated `file_upload_ui` flow) must be deployed to
+   `https://api.descript.com/v2/mcp` and rescanned in the portal before you
+   submit the package: final submission requires "a successful, current tool
+   scan" of the production server. New tools stay unavailable to users until
+   they pass automated checks; changed tools keep their live definition while
+   an update is held.
+2. **One review at a time.** Only one review can be active per plugin. To
+   submit 1.2.0 while 1.1.0 is in review, the portal requires waiting for the
+   decision or cancelling the 1.1.0 review. Do not cancel it without an explicit
+   decision from the release owner.
 3. **Build the ZIP from the submitted 1.1.0 artifact.** Download the 1.1.0
    package from the portal, keep its package identity
    (`app-69f0dc45f6048191876c14c1016fe778`) and MCP configuration, and carry
