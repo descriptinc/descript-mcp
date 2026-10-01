@@ -1,11 +1,12 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "descript",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
   "author": {
     "name": "Descript",
-    "email": "support@descript.com"
+    "email": "support@descript.com",
+    "url": "https://www.descript.com"
   },
   "homepage": "https://www.descript.com/mcp",
   "repository": "https://github.com/descriptinc/descript-mcp",
@@ -33,7 +34,7 @@
       "interface": {
         "displayName": "Descript",
         "shortDescription": "Edit video by chatting",
-        "longDescription": "Descript lets you edit video and audio by editing text. Import media from URLs or file uploads, create projects, and use Underlord — Descript's AI co-editor — to trim, rearrange, remove filler words, add captions, and more. Publish a shareable link, or export a transcript or a Premiere Pro / DaVinci Resolve timeline, all from your assistant.",
+        "longDescription": "Descript lets you edit video and audio by editing text. Import media from URLs or file uploads, create projects, and use Underlord — Descript's AI co-editor — to trim, rearrange, remove filler words, add captions, and more. Publish a shareable link, or export a transcript or a Premiere Pro / DaVinci Resolve timeline, all from your assistant. In ChatGPT, open the Descript sidebar to browse your projects, pick a project and composition for your next request, and upload files into a new project while you watch the progress.",
         "developerName": "Descript",
         "category": "Creativity",
         "websiteURL": "https://www.descript.com/mcp",
@@ -47,6 +48,62 @@
           "Publish my project as a shareable video link",
           "Export my project's transcript as an SRT file"
         ]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Launch: open Descript from the ChatGPT sidebar and list projects",
+              "prompt": "Show my projects.",
+              "tools_triggered": "open_descript, get_drive_info, list_projects",
+              "expected_behavior": "Opens the Descript project browser in the sidebar for the signed-in account's Drive and shows the first page of its projects. Nothing is created, uploaded, edited, or published."
+            },
+            {
+              "description": "Find: search for a project by name and inspect the result",
+              "prompt": "Find the Webinar demo project.",
+              "tools_triggered": "search_drive, list_projects, get_project",
+              "expected_behavior": "Returns only projects the account can access whose names match \"Webinar demo\". Paging through results is stable. Opening the match shows its details and compositions. Nothing is changed."
+            },
+            {
+              "description": "Select: choose a composition in the browser and ask what is selected",
+              "prompt": "Which project and composition have I selected?",
+              "tools_triggered": "get_project",
+              "expected_behavior": "After the reviewer selects the Demo composition of the Webinar demo project, names that exact project and composition. Changing or clearing the selection updates the answer. No edit or other job starts."
+            },
+            {
+              "description": "New upload: create a new project from the provided sample file",
+              "prompt": "Create a new project from this file.",
+              "tools_triggered": "file_upload_ui, wait_for_job",
+              "expected_behavior": "After the reviewer adds the sample file, creates one new project and one import job. Shows file transfer and server processing as separate stages, then returns a working project link."
+            },
+            {
+              "description": "Existing project: add the sample file to the selected project's media library",
+              "prompt": "Add this sample to the selected project's media library.",
+              "tools_triggered": "file_upload_ui, wait_for_job",
+              "expected_behavior": "Imports the file into the selected project's media library without creating or rearranging a composition. Reopening the progress view shows the same job, and the final project state matches the server."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Denied access: the reviewer asks for a project the account cannot access",
+              "prompt": "Open my coworker's Descript project and show me what's in it.",
+              "expected_behavior": "The server denies access. No metadata from the other project is shown and nothing is changed. The browser explains that only projects the signed-in account can access are available."
+            },
+            {
+              "description": "Ambiguous destination: upload requested with no project selected",
+              "prompt": "Upload this to my project.",
+              "expected_behavior": "With no project selected, asks which project to use or shows a destination picker. Does not guess a project ID and starts no upload or import job until the destination is chosen."
+            },
+            {
+              "description": "Selection is not consent: a selected project is not edited without a request",
+              "prompt": "I picked a project in Descript. What did I pick?",
+              "expected_behavior": "Reports the selected project and composition only. Does not call prompt_project_agent, publish_project, export_timeline, or cancel_job, and nothing in the project changes."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Adds a Descript sidebar in ChatGPT. Browse your projects and compositions, select one to use as context for Underlord edits, publishing, and transcript exports, and upload files into a new project with live upload and import progress."
       }
     }
   }

@@ -12,7 +12,7 @@ description: Publish a Descript project composition to create a shareable link a
 
 ## Instructions
 
-1. Locate the project with `search_drive` (or `list_projects` if filtering/paginating the project list), then use `get_project` to retrieve its composition IDs and any existing publishes.
+1. If the user selected a project and composition in the Descript sidebar, that selection is in your context: use those IDs as given and skip the search, but still call `get_project` to check for existing publishes. Otherwise, locate the project with `search_drive` (or `list_projects` if filtering/paginating the project list), then use `get_project` to retrieve its composition IDs and any existing publishes.
 2. Confirm with the user which composition to publish if there is more than one.
 3. Confirm the user actually wants to publish before calling `publish_project`. Publishing is user-visible and republishing the same composition overwrites the previous output at the same share URL — get explicit authorization before publishing or overwriting an existing publish. The host may also surface its own approval prompt.
 4. Call `publish_project` with the project ID and composition ID. To retrieve an existing share link without republishing, read it from `get_project` instead of calling `publish_project`.
