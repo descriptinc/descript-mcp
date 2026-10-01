@@ -28,6 +28,7 @@ description: Create a new Descript video project from media files or URLs and op
 Pick the path the connected tools actually support:
 
 - **Direct upload** — for clients that can make outbound HTTPS requests to cloud storage (for example a desktop app or CLI).
+- **Descript sidebar** — in ChatGPT, the user can upload files from the Descript sidebar. The sidebar creates the project and shows upload and import progress; do not also call `import_media` for those files.
 - **Upload widget** — if a `file_upload_ui` tool is available and the host renders MCP Apps, it lets the user drop files; it returns a `job_id` to poll with `wait_for_job`. Do not call it again once it has returned a `job_id`.
 - **Conversation attachments** — only if the `import_media` schema you were given includes a `files` parameter and the host resolves the attachment into a file object. Descript exposes `files` only to hosts that fill it in; if it is absent, this path does not exist.
 

@@ -18,7 +18,67 @@
         "logo": "./assets/logo.svg",
         "composerIcon": "./assets/logo.svg",
         "defaultPrompt": ["Create a video project from these clips"]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Positive case 1",
+              "prompt": "Positive prompt 1",
+              "tools_triggered": "get_project, wait_for_job",
+              "expected_behavior": "Expected behavior 1"
+            },
+            {
+              "description": "Positive case 2",
+              "prompt": "Positive prompt 2",
+              "tools_triggered": "get_project, wait_for_job",
+              "expected_behavior": "Expected behavior 2"
+            },
+            {
+              "description": "Positive case 3",
+              "prompt": "Positive prompt 3",
+              "tools_triggered": "get_project, wait_for_job",
+              "expected_behavior": "Expected behavior 3"
+            },
+            {
+              "description": "Positive case 4",
+              "prompt": "Positive prompt 4",
+              "tools_triggered": "get_project, wait_for_job",
+              "expected_behavior": "Expected behavior 4"
+            },
+            {
+              "description": "Positive case 5",
+              "prompt": "Positive prompt 5",
+              "tools_triggered": "get_project, wait_for_job",
+              "expected_behavior": "Expected behavior 5"
+            }
+          ],
+          "negative": [
+            {
+              "description": "Negative case 1",
+              "prompt": "Negative prompt 1",
+              "expected_behavior": "Answers without calling any Descript tool."
+            },
+            {
+              "description": "Negative case 2",
+              "prompt": "Negative prompt 2",
+              "expected_behavior": "Answers without calling any Descript tool."
+            },
+            {
+              "description": "Negative case 3",
+              "prompt": "Negative prompt 3",
+              "expected_behavior": "Answers without calling any Descript tool."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Fixture release notes."
       }
     }
+  },
+  "author": {
+    "name": "Descript",
+    "url": "https://www.descript.com"
   }
 }

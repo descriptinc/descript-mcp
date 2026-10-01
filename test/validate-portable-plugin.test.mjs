@@ -32,6 +32,8 @@ async function editJson(dir, rel, fn) {
 }
 
 const iface = (data) => data.extensions["com.openai"].interface;
+const review = (data) => data.extensions["com.openai"].review;
+const cases = (data) => review(data).test_cases;
 const SKILL_YAML = "skills/demo/agents/openai.yaml";
 
 async function expectError(mutate, pattern) {
@@ -242,6 +244,127 @@ describe("validatePortablePlugin", () => {
           (m) => (m.plugins[0].source.path = "../other"),
         ),
       /source\.path must be root-relative/,
+    );
+  });
+
+  it("rejects an unsupported Agent Plugins schema", async () => {
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) => (p.$schema = "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json"),
+        ),
+      /plugin\.json "\$schema" must be/,
+    );
+    await expectError(
+      (d) => editJson(d, "mcp.json", (m) => delete m.$schema),
+      /mcp\.json "\$schema" must be/,
+    );
+  });
+
+  it("rejects a missing, over-long, or non-https author", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => delete p.author),
+      /"author" is required/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.author.name = "A".repeat(121))),
+      /"author\.name" is 121 chars; max is 120/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.author.url = "http://www.descript.com")),
+      /"author\.url" must be an https URL/,
+    );
+  });
+
+  it("rejects unknown keys under extensions.com.openai", () =>
+    expectError(
+      (d) => editJson(d, "plugin.json", (p) => (p.extensions["com.openai"].listing = {})),
+      /extensions\["com\.openai"\] has unsupported key "listing"/,
+    ));
+
+  it("requires review and publication", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => delete p.extensions["com.openai"].review),
+      /missing extensions\["com\.openai"\]\.review/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => delete p.extensions["com.openai"].publication),
+      /missing extensions\["com\.openai"\]\.publication/,
+    );
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) => (p.extensions["com.openai"].publication.release_notes = " "),
+        ),
+      /"release_notes" is required/,
+    );
+  });
+
+  it("requires exactly 5 positive and 3 negative test cases", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => cases(p).positive.pop()),
+      /has 4 positive test cases; exactly 5 are required/,
+    );
+    await expectError(
+      (d) =>
+        editJson(d, "plugin.json", (p) =>
+          cases(p).negative.push({ ...cases(p).negative[0], prompt: "x" }),
+        ),
+      /has 4 negative test cases; exactly 3 are required/,
+    );
+  });
+
+  it("rejects test cases with missing, extra, or malformed fields", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => delete cases(p).positive[0].tools_triggered),
+      /positive\[0\] "tools_triggered" is required/,
+    );
+    await expectError(
+      (d) =>
+        editJson(d, "plugin.json", (p) => (cases(p).negative[0].tools_triggered = "get_project")),
+      /negative\[0\] has unsupported key "tools_triggered"/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (cases(p).positive[1].user_prompt = "Hi")),
+      /positive\[1\] has unsupported key "user_prompt"/,
+    );
+    await expectError(
+      (d) =>
+        editJson(d, "plugin.json", (p) => (cases(p).positive[2].tools_triggered = "Get Project")),
+      /must be comma-separated MCP tool names \(found "Get Project"\)/,
+    );
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) => (cases(p).positive[3].prompt = cases(p).positive[0].prompt),
+        ),
+      /positive\[3\] "prompt" duplicates another test case/,
+    );
+  });
+
+  it("rejects reviewer instructions and credentials in the repo", async () => {
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (review(p).reviewer_instructions = "Sign in as...")),
+      /OpenAI review has unsupported key "reviewer_instructions"/,
+    );
+    await expectError(
+      (d) => editJson(d, "plugin.json", (p) => (review(p).test_account = { email: "a@b.co" })),
+      /credential-like key "test_account"/,
+    );
+    await expectError(
+      (d) =>
+        editJson(
+          d,
+          "plugin.json",
+          (p) => (cases(p).positive[0].expected_behavior = "Sign in with password: hunter22"),
+        ),
+      /looks like it contains a credential/,
     );
   });
 

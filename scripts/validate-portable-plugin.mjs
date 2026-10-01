@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Validates the portable Agent Plugins package: the root manifest, root
-// mcp.json, the OpenAI listing metadata, each skill's agents/openai.yaml
+// mcp.json, the OpenAI listing, review, and publication metadata, each skill's agents/openai.yaml
 // dependency file, the Codex repo marketplace, and version consistency with the
 // Claude Code and Cursor manifests.
 //
@@ -15,6 +15,8 @@ import { pathToFileURL } from "node:url";
 import { parseYaml } from "./mini-yaml.mjs";
 
 export const EXPECTED_URL = "https://api.descript.com/v2/mcp";
+const PLUGIN_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json";
+const MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json";
 const PLUGIN_NAME = "descript";
 const CATEGORY = "Creativity";
 
@@ -51,6 +53,32 @@ const INTERFACE_KEYS = new Set([
 const URL_MAX = 1024;
 const DEFAULT_PROMPT_MAX = 3;
 const DEFAULT_PROMPT_LENGTH_MAX = 128;
+
+const AUTHOR_KEYS = new Set(["name", "email", "url"]);
+const AUTHOR_NAME_MAX = 120;
+
+// Shape of extensions["com.openai"].review and .publication as imported by the
+// OpenAI plugin submission portal: exactly 5 positive and 3 negative test cases.
+// Reviewer credentials and instructions are entered in the portal, never here.
+const OPENAI_EXTENSION_KEYS = new Set([
+  "interface",
+  "apps",
+  "hooks",
+  "onboardingSkill",
+  "review",
+  "publication",
+]);
+const REVIEW_KEYS = new Set(["test_cases", "commerce", "commerce_description"]);
+const TEST_CASE_GROUPS = { positive: 5, negative: 3 };
+const TEST_CASE_KEYS = {
+  positive: ["description", "prompt", "tools_triggered", "expected_behavior"],
+  negative: ["description", "prompt", "expected_behavior"],
+};
+const PUBLICATION_KEYS = new Set(["release_notes"]);
+const TOOL_NAME = /^[a-z][a-z0-9_]*$/;
+const CREDENTIAL_KEY = /password|passcode|secret|token|credential|api_?key|login|test_?account/i;
+const CREDENTIAL_VALUE =
+  /\b(password|passcode|api[ _-]?key)\s*[:=]|\bbearer\s+[a-z0-9._-]{8,}|\bsk-[a-z0-9_-]{16,}/i;
 
 const SKILL_TOOL_KEYS = new Set(["type", "value", "description", "transport", "url"]);
 const MARKETPLACE_KEYS = new Set(["name", "interface", "plugins"]);
@@ -123,20 +151,138 @@ export async function validatePortablePlugin(root) {
     }
   }
 
+  function checkAuthor(author) {
+    if (!isObject(author)) {
+      err('plugin.json "author" is required.');
+      return;
+    }
+    checkUnknownKeys(author, AUTHOR_KEYS, "plugin.json author");
+    if (typeof author.name !== "string" || author.name.trim().length === 0) {
+      err('plugin.json "author.name" is required.');
+    } else if (len(author.name) > AUTHOR_NAME_MAX) {
+      err(`plugin.json "author.name" is ${len(author.name)} chars; max is ${AUTHOR_NAME_MAX}.`);
+    }
+    if (
+      author.url !== undefined &&
+      !(typeof author.url === "string" && author.url.startsWith("https://"))
+    ) {
+      err('plugin.json "author.url" must be an https URL.');
+    }
+  }
+
+  function checkNoCredentials(value, where) {
+    if (Array.isArray(value)) {
+      value.forEach((v, i) => checkNoCredentials(v, `${where}[${i}]`));
+    } else if (isObject(value)) {
+      for (const [k, v] of Object.entries(value)) {
+        if (CREDENTIAL_KEY.test(k))
+          err(`${where} has credential-like key "${k}"; enter credentials in the portal.`);
+        checkNoCredentials(v, `${where}.${k}`);
+      }
+    } else if (typeof value === "string" && CREDENTIAL_VALUE.test(value)) {
+      err(`${where} looks like it contains a credential; enter credentials in the portal.`);
+    }
+  }
+
+  function checkReview(review) {
+    const where = "OpenAI review";
+    if (!isObject(review)) {
+      err('plugin.json is missing extensions["com.openai"].review.');
+      return;
+    }
+    checkUnknownKeys(review, REVIEW_KEYS, where);
+    if (review.commerce !== undefined && typeof review.commerce !== "boolean") {
+      err(`${where} "commerce" must be a boolean.`);
+    }
+    if (
+      review.commerce_description !== undefined &&
+      typeof review.commerce_description !== "string"
+    ) {
+      err(`${where} "commerce_description" must be a string.`);
+    }
+    const cases = review.test_cases;
+    if (!isObject(cases)) {
+      err(`${where} "test_cases" is required.`);
+      return;
+    }
+    checkUnknownKeys(cases, new Set(Object.keys(TEST_CASE_GROUPS)), `${where} test_cases`);
+    const prompts = new Set();
+    for (const [group, count] of Object.entries(TEST_CASE_GROUPS)) {
+      const list = cases[group];
+      if (!Array.isArray(list)) {
+        err(`${where} test_cases.${group} must be an array.`);
+        continue;
+      }
+      if (list.length !== count) {
+        err(`${where} has ${list.length} ${group} test cases; exactly ${count} are required.`);
+      }
+      const required = TEST_CASE_KEYS[group];
+      list.forEach((tc, i) => {
+        const at = `${where} test_cases.${group}[${i}]`;
+        if (!isObject(tc)) {
+          err(`${at} must be an object.`);
+          return;
+        }
+        checkUnknownKeys(tc, new Set(required), at);
+        for (const key of required) {
+          if (typeof tc[key] !== "string" || tc[key].trim().length === 0) {
+            err(`${at} "${key}" is required.`);
+          }
+        }
+        if (typeof tc.prompt === "string") {
+          if (prompts.has(tc.prompt)) err(`${at} "prompt" duplicates another test case.`);
+          prompts.add(tc.prompt);
+        }
+        if (typeof tc.tools_triggered === "string") {
+          for (const tool of tc.tools_triggered.split(",").map((t) => t.trim())) {
+            if (!TOOL_NAME.test(tool)) {
+              err(
+                `${at} "tools_triggered" must be comma-separated MCP tool names (found "${tool}").`,
+              );
+            }
+          }
+        }
+      });
+    }
+  }
+
+  function checkPublication(publication) {
+    const where = "OpenAI publication";
+    if (!isObject(publication)) {
+      err('plugin.json is missing extensions["com.openai"].publication.');
+      return;
+    }
+    checkUnknownKeys(publication, PUBLICATION_KEYS, where);
+    if (
+      typeof publication.release_notes !== "string" ||
+      publication.release_notes.trim().length === 0
+    ) {
+      err(`${where} "release_notes" is required.`);
+    }
+  }
+
   // Root manifest.
   const manifest = await readJson("plugin.json");
+  let openai = null;
   let iface = null;
   if (isObject(manifest)) {
     checkUnknownKeys(manifest, ROOT_MANIFEST_KEYS, "plugin.json");
     if (manifest.name !== PLUGIN_NAME) {
       err(`plugin.json "name" must be "${PLUGIN_NAME}" (found "${manifest.name}").`);
     }
+    if (manifest.$schema !== PLUGIN_SCHEMA) {
+      err(`plugin.json "$schema" must be "${PLUGIN_SCHEMA}" (found "${manifest.$schema}").`);
+    }
     for (const key of ["version", "description"]) {
       if (typeof manifest[key] !== "string" || manifest[key].length === 0) {
         err(`plugin.json "${key}" is required.`);
       }
     }
-    iface = manifest.extensions?.["com.openai"]?.interface;
+    checkAuthor(manifest.author);
+    openai = manifest.extensions?.["com.openai"];
+    if (isObject(openai))
+      checkUnknownKeys(openai, OPENAI_EXTENSION_KEYS, 'extensions["com.openai"]');
+    iface = openai?.interface;
   }
 
   // OpenAI listing metadata.
@@ -186,10 +332,20 @@ export async function validatePortablePlugin(root) {
     }
   }
 
+  // OpenAI review and publication metadata.
+  if (isObject(openai)) {
+    checkReview(openai.review);
+    checkPublication(openai.publication);
+    checkNoCredentials(openai, 'extensions["com.openai"]');
+  }
+
   // Root mcp.json.
   const mcp = await readJson("mcp.json");
   if (isObject(mcp)) {
     checkUnknownKeys(mcp, new Set(["$schema", "mcpServers"]), "mcp.json");
+    if (mcp.$schema !== MCP_SCHEMA) {
+      err(`mcp.json "$schema" must be "${MCP_SCHEMA}" (found "${mcp.$schema}").`);
+    }
     const server = mcp.mcpServers?.[PLUGIN_NAME];
     if (!isObject(server)) {
       err(`mcp.json must define mcpServers.${PLUGIN_NAME}.`);

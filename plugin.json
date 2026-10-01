@@ -1,11 +1,12 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "descript",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Import media, edit with Underlord, publish share links, and export transcripts or Premiere/Resolve timelines — from your agent.",
   "author": {
     "name": "Descript",
-    "email": "support@descript.com"
+    "email": "support@descript.com",
+    "url": "https://www.descript.com"
   },
   "homepage": "https://www.descript.com/mcp",
   "repository": "https://github.com/descriptinc/descript-mcp",
@@ -33,7 +34,7 @@
       "interface": {
         "displayName": "Descript",
         "shortDescription": "Edit video by chatting",
-        "longDescription": "Descript lets you edit video and audio by editing text. Import media from URLs or file uploads, create projects, and use Underlord — Descript's AI co-editor — to trim, rearrange, remove filler words, add captions, and more. Publish a shareable link, or export a transcript or a Premiere Pro / DaVinci Resolve timeline, all from your assistant.",
+        "longDescription": "Descript lets you edit video and audio by editing text. Import media from URLs or file uploads, create projects, and use Underlord — Descript's AI co-editor — to trim, rearrange, remove filler words, add captions, and more. Publish a shareable link, or export a transcript or a Premiere Pro / DaVinci Resolve timeline, all from your assistant. In ChatGPT, open the Descript sidebar to browse your projects, pick a project and composition for your next request, and upload files into a new project while you watch the progress.",
         "developerName": "Descript",
         "category": "Creativity",
         "websiteURL": "https://www.descript.com/mcp",
@@ -47,6 +48,62 @@
           "Publish my project as a shareable video link",
           "Export my project's transcript as an SRT file"
         ]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Open the Descript sidebar",
+              "prompt": "Open Descript and show me my projects.",
+              "tools_triggered": "open_descript",
+              "expected_behavior": "Opens the Descript sidebar with a read-only list of the signed-in account's projects and their compositions. Nothing is created or changed."
+            },
+            {
+              "description": "Edit the project and composition selected in the sidebar",
+              "prompt": "Remove the filler words from the composition I selected in Descript.",
+              "tools_triggered": "prompt_project_agent, wait_for_job",
+              "expected_behavior": "Uses the project and composition selected in the sidebar without asking for them again, starts an Underlord edit, reports its progress, and confirms when the edit is done."
+            },
+            {
+              "description": "Upload files into a new project",
+              "prompt": "Upload a video file into a new Descript project.",
+              "tools_triggered": "file_upload_ui, wait_for_job",
+              "expected_behavior": "Shows the Descript upload panel. After the user adds a file, it creates a new project, shows upload and import progress, and returns the project link when the import finishes."
+            },
+            {
+              "description": "Publish the selected project",
+              "prompt": "Publish the Descript project I selected as a shareable video link.",
+              "tools_triggered": "get_project, publish_project, wait_for_job",
+              "expected_behavior": "Asks the user to confirm before publishing, publishes the selected composition, and returns the share link and download link exactly as Descript returns them."
+            },
+            {
+              "description": "Export a transcript",
+              "prompt": "Export the transcript of my most recent Descript project as an SRT file.",
+              "tools_triggered": "list_projects, get_project, export_transcript",
+              "expected_behavior": "Finds the most recent project, exports its transcript in SRT format, and shows the transcript text. Nothing in the project is changed."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Deleting a project, which Descript does not support from the chat",
+              "prompt": "Delete my oldest Descript project.",
+              "expected_behavior": "Does not delete or change anything. Says projects cannot be deleted from the chat and suggests deleting it in the Descript app."
+            },
+            {
+              "description": "Opening a project that belongs to another user",
+              "prompt": "Open the Descript project my coworker is working on and show me their edits.",
+              "expected_behavior": "Does not guess project IDs or show anything outside the signed-in account's Drive. Says it can only reach projects the signed-in account can access."
+            },
+            {
+              "description": "Unrelated request",
+              "prompt": "What is a good recipe for banana bread?",
+              "expected_behavior": "Answers without calling any Descript tool."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Adds a Descript sidebar in ChatGPT. Browse your projects and compositions, select one to use as context for Underlord edits, publishing, and transcript exports, and upload files into a new project with live upload and import progress."
       }
     }
   }
