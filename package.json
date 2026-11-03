@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "validate:registry": "node scripts/check-mcp-url.mjs && node scripts/validate-registry.mjs",
     "validate": "node scripts/validate-plugin.mjs && node scripts/validate-portable-plugin.mjs && node scripts/check-mcp-url.mjs",
     "test": "node --test \"test/**/*.test.mjs\"",
     "lint": "oxlint --deny-warnings",

@@ -16,6 +16,15 @@ const mcpJson = JSON.parse(readFileSync("mcp.json", "utf8"));
 const mcpUrl = mcpJson?.mcpServers?.descript?.url;
 if (mcpUrl !== EXPECTED) errors.push(`mcp.json url is ${mcpUrl}`);
 
+const registry = JSON.parse(readFileSync("server.json", "utf8"));
+if (
+  registry.remotes?.length !== 1 ||
+  registry.remotes[0].type !== "streamable-http" ||
+  registry.remotes[0].url !== EXPECTED
+) {
+  errors.push(`server.json must have one streamable-http remote at ${EXPECTED}`);
+}
+
 // 2. Cursor deep link in README (config=<base64 JSON>)
 const readme = readFileSync("README.md", "utf8");
 const deepLink = readme.match(/config=([A-Za-z0-9+/=]+)/);
