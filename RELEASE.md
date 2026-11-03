@@ -46,3 +46,36 @@ goes live:
 Direct installs read this repo's manifests as-is and keep the `descript` package
 name. No portal step is involved; a merge to `main` is what ships them. See the
 README for per-harness install, refresh, and OAuth details.
+
+## Official MCP Registry
+
+`server.json` describes the hosted server as `io.github.descriptinc/descript`.
+Its version tracks the Registry listing independently of the plugin manifests.
+The listing points to the existing MCP endpoint and uses its existing OAuth flow.
+
+To publish, you need Write access to this repository (the PM team already has it):
+
+1. For an update, change `server.json` and increment its version in a PR. The first
+   publication uses the initial `1.0.0` listing.
+2. Wait for CI to pass and the reviewed PR to merge to `main`.
+3. Open [Actions → Publish MCP Registry listing](https://github.com/descriptinc/descript-mcp/actions/workflows/publish-mcp.yml).
+4. Select **Run workflow**, choose **main**, and run it. Runs on other branches
+   are skipped. The workflow publishes the commit selected when the run starts.
+5. Check the run's summary for the published version and commit, then confirm it
+   in the [Registry API](https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.descriptinc%2Fdescript).
+
+The workflow authenticates through GitHub OIDC. Maintainers do not need a PAT,
+Registry secret, local publisher installation, or organization-owner access.
+There is no separate environment approval after clicking **Run workflow**.
+Merging a PR alone does not publish to the Registry. This workflow only publishes
+Registry metadata; connector marketplace submissions are separate.
+
+Run `npm run validate:registry` to check the endpoint and validate the listing
+against the Registry's API without publishing. This check requires network access
+and also runs in PR CI and before publishing. If the Registry is unavailable,
+retry validation when it recovers.
+
+The publisher version is pinned in the workflow and its Sigstore bundle is
+verified before execution. Update that pin deliberately when upgrading.
+See the [Registry quickstart](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/quickstart.mdx)
+and [GitHub Actions guide](https://github.com/modelcontextprotocol/registry/blob/main/docs/modelcontextprotocol-io/github-actions.mdx).
