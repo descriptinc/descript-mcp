@@ -8,18 +8,18 @@ It works with ChatGPT, Claude, Cursor, Claude Code, Codex, Antigravity, and any 
 
 The plugin ships skills for the workflows people use most. Each one asks a few setup questions, gets your media into Descript, and has Underlord do the editing.
 
-| Skill                           | What it does                                                                                                     |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `edit-talking-head-video`       | Cleans up a single-speaker recording into a finished video, with layouts, lower-thirds, a tight cut, and b-roll. |
-| `generate-video-with-voiceover` | Builds a narrated video from a recording, a script, or just a topic, with an optional AI avatar presenter.       |
-| `edit-podcast-recording`        | Turns a podcast or interview recording, audio or multi-cam video, into a finished episode.                       |
-| `create-clips`                  | Cuts short social clips or audiograms from a long recording for the platform and aspect ratio you pick.          |
-| `translate-and-dub`             | Translates a video into other languages as captions, subtitles, or dubbed audio.                                 |
-| `turn-slides-into-video`        | Turns a PDF slide deck into a narrated video, one scene per slide.                                               |
-| `generate-an-animated-story`    | Generates a multi-scene animated story, like a movie trailer or a children's story, from a premise.              |
-| `publish-project`               | Publishes a composition as a share link plus a video or audio file.                                              |
-| `export-transcript`             | Exports a transcript as txt, markdown, html, rtf, or srt.                                                        |
-| `export-timeline`               | Exports a timeline for Premiere Pro, DaVinci Resolve, or Final Cut Pro.                                          |
+| Skill | What it does |
+| --- | --- |
+| `edit-talking-head-video` | Edit a talking-head video with AI: remove filler words and retakes, tighten the cut, and add scene layouts, lower-thirds, and b-roll. |
+| `generate-video-with-voiceover` | Make a narrated video from a script, a topic, or a voiceover recording, with AI voiceover and an optional AI avatar presenter. |
+| `edit-podcast-recording` | Edit a podcast or interview recording into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen in multi-cam video, add lower-thirds, and add an intro, outro, or music. |
+| `create-clips` | Turn a long video or podcast into short social clips for YouTube Shorts, TikTok, or Instagram Reels, with captions, the active speaker kept on screen, and 9:16, 1:1, or 16:9 framing. Also makes audiograms from audio-only sources. |
+| `translate-and-dub` | Translate a video into other languages with subtitles, burned-in captions, or AI dubbing in native-sounding voices for each speaker, one version per language. |
+| `turn-slides-into-video` | Turn a PDF slide deck into a narrated video, one scene per slide, with an AI voiceover written across the whole deck and an optional AI avatar presenter. Works with PowerPoint, Keynote, or Google Slides exported to PDF. |
+| `generate-an-animated-story` | Generate an AI-animated video from a story idea, such as a movie-style trailer or an illustrated children's story, with consistent characters and locations, AI-generated scenes, and optional voiceover, music, and captions. |
+| `publish-project` | Publish a Descript video or audio project to get a shareable link and a downloadable video or audio file. |
+| `export-transcript` | Export a Descript transcript as a TXT, Markdown, HTML, RTF, or SRT subtitle file, with optional speaker labels and timecodes. |
+| `export-timeline` | Export a Descript edit as a timeline file (Premiere Pro XML, DaVinci Resolve XML, Final Cut Pro XML, EDL, AAF, or Adobe Audition SESX) to finish in Premiere Pro, DaVinci Resolve, Final Cut Pro, Audition, or Pro Tools. |
 
 Skills load in Cursor, Claude Code, Codex, Antigravity, and the ChatGPT app. A bare MCP connection gets the tools but not the skills.
 

@@ -1,6 +1,6 @@
 ---
 name: edit-podcast-recording
-description: Edit a podcast recording, audio-only or multi-cam video, into a finished episode: clean up the script, keep the active speaker on screen, add lower-thirds, and polish. Use when the user has a podcast or interview recording to edit.
+description: Edit a podcast or interview recording into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen in multi-cam video, add lower-thirds, and add an intro, outro, or music. Use when the user wants to edit an audio or video podcast or interview.
 ---
 
 # Rough cut of podcast

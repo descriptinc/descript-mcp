@@ -1,6 +1,6 @@
 ---
 name: export-timeline
-description: Export a Descript project's timeline for another editor like Premiere Pro, DaVinci Resolve, Final Cut Pro, or Pro Tools.
+description: Export a Descript edit as a timeline file (Premiere Pro XML, DaVinci Resolve XML, Final Cut Pro XML, EDL, AAF, or Adobe Audition SESX) to finish in Premiere Pro, DaVinci Resolve, Final Cut Pro, Audition, or Pro Tools. Use when the user asks for an XML, EDL, or AAF, or wants to move an edit into another video editor or DAW.
 ---
 
 # Export Timeline

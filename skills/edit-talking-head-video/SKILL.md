@@ -1,6 +1,6 @@
 ---
 name: edit-talking-head-video
-description: Edit a single-speaker camera recording into a finished video: clean up the script, build scenes and layouts, add lower-thirds, tighten the cut, polish, and fill b-roll. Use when the user has a talking-head recording to turn into a finished edit.
+description: Edit a talking-head video with AI: remove filler words and retakes, tighten the cut, and add scene layouts, lower-thirds, and b-roll. Use when the user wants to turn a vlog, YouTube video, tutorial, course lesson, or other single-speaker camera recording into a finished video.
 ---
 
 # Clean up video recording

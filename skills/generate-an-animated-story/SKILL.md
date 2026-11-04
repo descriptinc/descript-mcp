@@ -1,6 +1,6 @@
 ---
 name: generate-an-animated-story
-description: Generate a multi-scene, AI-animated story from a premise, such as a movie-trailer-style piece or an illustrated children's story, with characters, locations, per-scene generated clips, and optional voiceover. Use when the user wants an animated or illustrated video generated from scratch rather than an edit of existing footage.
+description: Generate an AI-animated video from a story idea, such as a movie-style trailer or an illustrated children's story, with consistent characters and locations, AI-generated scenes, and optional voiceover, music, and captions. Use when the user wants an animated or illustrated video made from scratch rather than an edit of existing footage.
 ---
 
 # Generate an animated story

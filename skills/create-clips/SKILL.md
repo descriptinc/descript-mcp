@@ -1,6 +1,6 @@
 ---
 name: create-clips
-description: Cut a long source (a podcast, interview, webinar, presentation, or livestream) into short social clips or audiograms for a chosen platform and aspect ratio. Use when the user wants shorts, reels, TikToks, or audiograms pulled from a longer video.
+description: Turn a long video or podcast into short social clips for YouTube Shorts, TikTok, or Instagram Reels, with captions, the active speaker kept on screen, and 9:16, 1:1, or 16:9 framing. Also makes audiograms from audio-only sources. Use when the user wants to repurpose a podcast, interview, webinar, presentation, or livestream into shorts, reels, or highlight clips.
 ---
 
 # Create social clips

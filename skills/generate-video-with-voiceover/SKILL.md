@@ -1,6 +1,6 @@
 ---
 name: generate-video-with-voiceover
-description: Generate a narrated video from a recording, a pasted script, or just a topic (explainer, promo, product or seller profile, intro) with an optional AI avatar presenter. Use when the user wants to build a voiceover-driven or avatar-presented video from scratch.
+description: Make a narrated video from a script, a topic, or a voiceover recording, with AI voiceover and an optional AI avatar presenter. Use when the user wants an explainer, promo, product or seller profile, or intro video made from scratch without filming.
 ---
 
 # Generate with an avatar

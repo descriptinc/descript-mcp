@@ -1,6 +1,6 @@
 ---
 name: turn-slides-into-video
-description: Turn a PDF slide deck into a narrated video, one scene per slide, with a cohesive voiceover written across the whole deck. Use when the user wants to turn slides or a presentation into a video.
+description: Turn a PDF slide deck into a narrated video, one scene per slide, with an AI voiceover written across the whole deck and an optional AI avatar presenter. Works with PowerPoint, Keynote, or Google Slides exported to PDF. Use when the user wants to convert slides or a presentation into a video.
 ---
 
 # Turn slides into video

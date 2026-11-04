@@ -1,6 +1,6 @@
 ---
 name: translate-and-dub
-description: Translate a video into other languages as captions or subtitles, one composition per language, and dub it with native-sounding voices when the user asks. Use when the user wants to translate, subtitle, dub, or localize a video.
+description: Translate a video into other languages with subtitles, burned-in captions, or AI dubbing in native-sounding voices for each speaker, one version per language. Use when the user wants to translate, subtitle, dub, or localize a video for viewers who speak other languages.
 ---
 
 # Translate & dub video
