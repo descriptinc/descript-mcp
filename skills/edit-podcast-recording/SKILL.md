@@ -1,76 +1,46 @@
 ---
 name: edit-podcast-recording
-description: Edit a podcast or interview recording into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen in multi-cam video, add lower-thirds, and add an intro, outro, or music. Use when the user wants to edit an audio or video podcast or interview.
+description: Edit a podcast or interview into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen, and add lower-thirds, an intro, an outro, or music. Works with audio-only or multi-cam video, and can sync separate camera and mic files.
 ---
 
-# Rough cut of podcast
+# Edit a podcast recording
 
-## When to use
-
-- The user has a podcast or interview recording, audio-only or multi-cam video
-- They want a rough cut or finished episode
-
-## Setup
-
-Ask these one at a time, briefly, and skip any the user has already answered.
-
-1. Get the main recording or recordings. If there are separate camera or mic files, ask whether to stitch them into one sequence so the tracks stay in sync.
-2. Ask whether they have intro, outro, or music files to add (optional).
-
-Import the user's media before handing off.
-
-## Underlord's workflow
-
-This is the workflow Underlord follows. It's the same skill users can read in the Descript app. Use it to set expectations and answer questions, but let Underlord do the work: don't try to carry out these steps with other tools. Underlord's own setup questions are already covered by your setup above, so pass the answers along instead of letting it ask again.
-
-### Edit a podcast recording
-
-### SET-UP
+# SET-UP
 Ask these questions one at a time, as succinctly as possible. Wait for an answer before asking the next.
 - First, ask me to upload my main podcast recording(s) if there isn't already one in the project. If I upload multiple camera/mic files, ask whether to stitch them into a sequence so the tracks stay aligned.
 - Ask whether I have optional intro, outro, or music files to add (uploaded separately).
 
 Once my files are uploaded, proceed with the workflow.
 
-### WORKFLOW
+# WORKFLOW
 
 - Transcribe my recording(s) and identify speakers. Don't transcribe the intro, outro, or music.
-- Clean up the script and trim any pre-show setup
-- Build scenes and layouts
-- Keep the active speaker on screen
-- Add lower-thirds
-- Polish the footage
-- If I provided intro/outro or music
+- Clean up the script and trim any pre-show setup — {{remove-retakes-and-filler}}
+- Build scenes and layouts — {{choose-layouts}}
+- Keep the active speaker on screen — {{center-active-speaker}}
+- Add lower-thirds — {{add-speaker-lower-thirds}}
+- Polish the footage — {{polish-pass}}
+- If I provided intro/outro or music — {{background-music}}
 
-### INTERACTION
+# INTERACTION
 Work through the workflow in phases and pause between them — don't run it start to finish in one go. At each major phase boundary (e.g. after the core content and structure, before styling, before audio), check that I'm happy before starting the next phase. Keep it a back-and-forth, not a single hand-off.
 
 ---
 
-After completing the workflow, offer a few follow-ups — e.g. repurpose into short clips or audiograms (the create-clips skill), or draft a publish package with show notes (Underlord's Prepare for publish skill).
+After completing the workflow, offer a few follow-ups — e.g. repurpose into short clips or audiograms ({{→ Create clips}}), or draft a publish package with show notes ({{→ Prepare for publish}}).
 
-## Getting media into Descript
+## Running this skill through Descript
 
-- **New project:** call `import_media` with a descriptive `project_name` and `add_compositions` so the media lands on the timeline. Show the returned `project_url` to the user.
-- **Existing project:** find it with `search_drive` (or `list_projects`), inspect it with `get_project`, and import into it without `add_compositions` unless the user asks.
-- **URLs:** pass them to `import_media` as-is. Don't rewrite Google Drive or Dropbox share links.
-- **Files on the user's device:** use whichever path the connected tools support:
-  - **Direct upload** (hosts that can make outbound HTTPS requests): set `content_type` and `file_size` instead of `url`, then `PUT` the raw bytes to each returned `upload_url` with header `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with the `job_id`, the file's `media_id`, and `status: "failed"`, and wait for that job to stop before retrying.
-  - **Upload widget:** if `file_upload_ui` is available and the host renders MCP Apps, use it and poll the `job_id` it returns. Don't call it again once it has returned a `job_id`.
-  - **Conversation attachments:** only if the `import_media` schema includes a `files` parameter.
-  - Never pass local or container paths (such as `/mnt/data/...`); Descript can't reach them. If no path works, tell the user and ask for a link Descript can fetch.
-- Wait for the import with `wait_for_job` before handing off to Underlord.
+Everything above this section is the skill exactly as it appears in the Descript app. It is written for Underlord, Descript's AI editor, in the user's voice ("ask me", "my recording"). Run it through the Descript MCP tools instead of carrying out the steps yourself. Markers such as `{{find-highlights}}` name techniques Underlord applies on its own.
 
-## Handing off to Underlord
-
-1. Call `prompt_project_agent` with the `project_id`, the `composition_id` when the project has more than one composition, and a prompt that:
-   - States the goal in plain words: edit this podcast recording into a finished episode, with a clean script, the active speaker on screen, lower-thirds, and polish.
-   - Asks Underlord to use its **Edit podcast recording** skill for it.
-   - Includes everything the user told you during setup, so Underlord doesn't ask again.
-2. Poll `wait_for_job` with `wait_seconds: 20` until the job is terminal, surfacing `progress.label` and `percent` after each poll. A timeout (`-32001`) or a `still_running` status means the job is still going; poll the same `job_id` again and never re-issue the prompt.
-3. Underlord works in phases and may stop to show progress or ask a question. Relay its message to the user, then send their reply with `prompt_project_agent`, reusing the returned `conversation_id`. Don't start a second agent job on the same composition while one is still running.
-4. When the workflow finishes, confirm the result from the completed job and `get_project`, then share the `project_url`.
-
-## After the edit
-
-Offer the follow-ups Underlord suggests. To share the result, use the publish-project skill. For a transcript or subtitle file, use export-transcript. To finish in Premiere Pro, DaVinci Resolve, or Final Cut Pro, use export-timeline.
+1. **Setup.** Ask the user the SET-UP questions one at a time, skipping any they've already answered.
+2. **Media.** Get the user's files into a project:
+   - New project: call `import_media` with a `project_name` and `add_compositions`, and show the user the returned `project_url`. If there's no media yet, pass `add_media: {}` to create an empty project.
+   - Existing project: find it with `search_drive` (or `list_projects`), check it with `get_project`, and import without `add_compositions` unless the user asks.
+   - URLs: pass them to `import_media` unchanged, including Google Drive and Dropbox share links.
+   - Local files: set `content_type` and `file_size` instead of `url`, then `PUT` the bytes to each returned `upload_url` with `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with `status: "failed"` and wait for that job to stop. If the host renders MCP Apps, `file_upload_ui` lets the user drop files instead. Use a `files` parameter only if `import_media` offers one. Never pass local or container paths such as `/mnt/data/...`; if nothing works, ask for a link Descript can fetch.
+   - Wait for the import with `wait_for_job` before the next step.
+3. **Hand off.** Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). In the prompt, ask Underlord to use its **Edit podcast recording** skill, say what the user wants, and include every setup answer so it doesn't ask again.
+4. **Wait.** Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as you go. A `-32001` timeout or `still_running` status means it's still working: poll the same `job_id` again and never resend the prompt.
+5. **Phases.** Underlord pauses between phases to show progress or ask a question. Pass its message to the user, then send their reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
+6. **Finish.** Confirm the result with `get_project` and share the `project_url`. To share the video, use the publish-project skill. For a transcript or subtitles, use export-transcript. To finish in another editor, use export-timeline.

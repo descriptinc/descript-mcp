@@ -10,16 +10,16 @@ The plugin ships skills for the workflows people use most. Each one asks a few s
 
 | Skill | What it does |
 | --- | --- |
-| `edit-talking-head-video` | Edit a talking-head video with AI: remove filler words and retakes, tighten the cut, and add scene layouts, lower-thirds, and b-roll. |
-| `generate-video-with-voiceover` | Make a narrated video from a script, a topic, or a voiceover recording, with AI voiceover and an optional AI avatar presenter. |
-| `edit-podcast-recording` | Edit a podcast or interview recording into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen in multi-cam video, add lower-thirds, and add an intro, outro, or music. |
-| `create-clips` | Turn a long video or podcast into short social clips for YouTube Shorts, TikTok, or Instagram Reels, with captions, the active speaker kept on screen, and 9:16, 1:1, or 16:9 framing. Also makes audiograms from audio-only sources. |
-| `translate-and-dub` | Translate a video into other languages with subtitles, burned-in captions, or AI dubbing in native-sounding voices for each speaker, one version per language. |
-| `turn-slides-into-video` | Turn a PDF slide deck into a narrated video, one scene per slide, with an AI voiceover written across the whole deck and an optional AI avatar presenter. Works with PowerPoint, Keynote, or Google Slides exported to PDF. |
-| `generate-an-animated-story` | Generate an AI-animated video from a story idea, such as a movie-style trailer or an illustrated children's story, with consistent characters and locations, AI-generated scenes, and optional voiceover, music, and captions. |
-| `publish-project` | Publish a Descript video or audio project to get a shareable link and a downloadable video or audio file. |
-| `export-transcript` | Export a Descript transcript as a TXT, Markdown, HTML, RTF, or SRT subtitle file, with optional speaker labels and timecodes. |
-| `export-timeline` | Export a Descript edit as a timeline file (Premiere Pro XML, DaVinci Resolve XML, Final Cut Pro XML, EDL, AAF, or Adobe Audition SESX) to finish in Premiere Pro, DaVinci Resolve, Final Cut Pro, Audition, or Pro Tools. |
+| `edit-talking-head-video` | Edit a talking-head video into a finished cut with AI: remove filler words and retakes, tighten the cut, and add scene layouts, lower-thirds, b-roll, and music. |
+| `generate-video-with-voiceover` | Create a narrated video from a script, a topic, or a voiceover recording, with AI voiceover, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo. |
+| `edit-podcast-recording` | Edit a podcast or interview into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen, and add lower-thirds, an intro, an outro, or music. |
+| `create-clips` | Turn a long video or podcast into short social clips for YouTube Shorts, TikTok, and Instagram Reels, with captions, the active speaker on screen, and 9:16, 1:1, or 16:9 framing. |
+| `translate-and-dub` | Translate a video into other languages with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices for each speaker. |
+| `turn-slides-into-video` | Turn a PDF slide deck into a narrated video, with one scene per slide, an AI voiceover written to flow across the whole presentation, and an optional AI avatar presenter. |
+| `generate-an-animated-story` | Generate an AI-animated video from a story idea, such as a movie-style trailer or an illustrated children's story. |
+| `publish-project` | Publish a Descript project to get a shareable link and a downloadable video or audio file. |
+| `export-transcript` | Export a Descript transcript as TXT, Markdown, HTML, RTF, or an SRT subtitle file, with optional speaker labels, markers, and timecodes. |
+| `export-timeline` | Export a Descript edit as a Premiere Pro, DaVinci Resolve, or Final Cut Pro XML, an EDL, an AAF, or an Adobe Audition session, to finish in another video editor or a DAW such as Pro Tools. |
 
 Skills load in Cursor, Claude Code, Codex, Antigravity, and the ChatGPT app. A bare MCP connection gets the tools but not the skills.
 

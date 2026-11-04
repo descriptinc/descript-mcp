@@ -1,6 +1,6 @@
 ---
 name: export-transcript
-description: Export a Descript transcript as a TXT, Markdown, HTML, RTF, or SRT subtitle file, with optional speaker labels and timecodes. Use when the user wants a transcript, captions file, or subtitles for a video or podcast.
+description: Export a Descript transcript as TXT, Markdown, HTML, RTF, or an SRT subtitle file, with optional speaker labels, markers, and timecodes. For getting a transcript, captions, or subtitles for a video or podcast.
 ---
 
 # Export Transcript
