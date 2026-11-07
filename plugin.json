@@ -43,9 +43,9 @@
         "logo": "./assets/logo.svg",
         "composerIcon": "./assets/logo.svg",
         "defaultPrompt": [
-          "Clean up my talking-head recording into a finished video",
-          "Cut social clips from my podcast episode for TikTok and Reels",
-          "Translate my video into Spanish and French captions"
+          "Turn my raw camera recording into a finished video",
+          "Cut my podcast episode into captioned clips for TikTok and Reels",
+          "Translate my video into Spanish and dub it"
         ]
       }
     }

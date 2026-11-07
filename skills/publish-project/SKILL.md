@@ -1,6 +1,6 @@
 ---
 name: publish-project
-description: Publish a Descript project to get a shareable link and a downloadable video or audio file. For sharing or downloading a finished video, podcast, or clip.
+description: Share a finished Descript video or podcast. Publishes the project to a shareable link and a downloadable video or audio file.
 ---
 
 # Publish Project

@@ -1,47 +1,70 @@
 ---
 name: translate-and-dub
-description: Translate a video into other languages with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices for each speaker. Creates a separate version for each language. For localizing videos, adding foreign-language subtitles, or dubbing into other languages.
+description: Reach viewers in other languages without re-recording. Translates a video into each language with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices matched to each speaker, and makes a separate version for every language.
 ---
 
-# Translate & dub
+# Translate and dub a video
 
-# SET-UP
-Ask these questions one at a time, as succinctly as possible. Wait for an answer before asking the next. Skip any question my message already answers.
-- First, ask whether I want to translate the audio (dubbing) or just the captions or subtitles. If I don't say, assume captions or subtitles.
-- Check the project for the video to translate; if there isn't one, ask me to upload it.
-- Ask which language(s) to translate into.
-- Ask whether I want the translated captions burned into the video, even if the original has none, or just a subtitle file (.srt) to download.
+Translates a video into other languages as captions, subtitles, or dubbed audio, one composition per language. The work runs in Descript through Underlord, Descript's AI editor. This skill gathers what Underlord needs, gets the media in, and relays the conversation.
 
-Once I've answered, start translating right away. Don't ask me to approve a plan first.
+## When to use
 
-# WORKFLOW
+- The user wants to translate, subtitle, dub, or localize a video.
 
+Not for a transcript in the original language. Use export-transcript for that.
+
+## What to ask
+
+Ask one question at a time, briefly, and skip any the user has already answered. Once they've answered, start right away; don't ask them to approve a plan first.
+
+1. Whether they want the audio dubbed or only captions or subtitles. If they don't say, assume captions or subtitles.
+2. The video to translate, if it isn't already in a project.
+3. Which languages to translate into.
+4. Whether the translated captions should be burned into the video, even if the original has none, or delivered as a subtitle file (.srt).
+
+## Get the media into Descript
+
+- **New project:** call `import_media` with a `project_name` and `add_compositions`, then share the returned `project_url`. If there's no media yet, pass `add_media: {}` to create an empty project.
+- **Existing project:** find it with `search_drive` (or `list_projects`), check it with `get_project`, and import without `add_compositions` unless the user asks.
+- **Links:** pass URLs to `import_media` unchanged, including Google Drive and Dropbox share links.
+- **Files on the user's device:** set `content_type` and `file_size` instead of `url`, then `PUT` the bytes to each returned `upload_url` with `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with `status: "failed"` and wait for that job to stop before retrying. If the host renders MCP Apps, `file_upload_ui` lets the user drop files instead. Use a `files` parameter only if `import_media` offers one. Never pass local or container paths such as `/mnt/data/...`; if nothing works, ask for a link Descript can fetch.
+- Wait for the import with `wait_for_job` before briefing Underlord.
+
+## Brief Underlord
+
+Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). Use this brief, filled in with the user's answers. It names Underlord's matching skill and spells out the workflow, so it works whether or not that skill is available to the user.
+
+```text
+Use your "Translate and dub" skill.
+Goal: Translate this video into the requested languages.
+Setup answers: <every answer from the questions above>
+Workflow:
 - Transcribe the video and wait until the transcript is ready before translating.
+- For each language: create its own composition, translate the speech and captions, add burned-in captions after translating if the user wants them, and give the composition a clear title naming the language.
+- If the video already has captions, translate them; don't remove them.
+- If the user wants dubbing: pick native-sounding voices for each speaker, prioritizing the target language and matching each speaker's gender and tone, and use neutral, professional voices for unassigned speakers. Report which voices were picked.
+- If a language can't be dubbed, say so and keep that version captions-only.
+- Start translating right away without asking for plan approval.
+```
 
-For each target language:
-- Create its own composition.
-- Translate the speech and captions into that language.
-- If I want burned-in captions, add them after translating — {{captions-and-animated-text}}. If the video already has captions, translate them; don't remove them.
-- Give the composition a clear title naming the language.
+## Wait and relay
 
-If I want the audio translated, dub it: pick native-sounding voices per speaker — {{choose-voice}} — prioritizing the target language and matching each speaker's gender and tone; use neutral, professional voices for unassigned speakers. Tell me which voices you picked. If a language can't be dubbed, say so and keep that version captions-only.
+- Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as it runs. A `-32001` timeout or a `still_running` status means it's still working: poll the same `job_id` again and never resend the brief.
+- Underlord works in phases and pauses at each major boundary (for example after the core content and structure, before styling, and before audio) to check the user is happy before moving on. Keep it a back-and-forth, not a single hand-off.
+- When Underlord pauses or asks something, pass its message to the user, including any images or links it shares. Send the reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
 
----
+## Finish
 
-After completing the workflow, summarize the languages I got. If I chose a subtitle file, tell me how to export it, looking up the steps in Descript's help docs rather than guessing. Then offer a few follow-ups — e.g. dub it with native-sounding voices for each speaker if I didn't, change subtitle styles in chat, translate into more languages, or bulk-export the translations.
+Confirm the result with `get_project` and share the `project_url`. Then offer the follow-ups:
 
-## Running this skill through Descript
+- Summarize which languages were created.
+- Subtitle files: run export-transcript with `format: "srt"` on each language's composition.
+- Dubbing with native-sounding voices for each speaker, if they chose captions only.
+- Different subtitle styles, more languages, or publishing each language with publish-project.
 
-Everything above this section is the skill exactly as it appears in the Descript app. It is written for Underlord, Descript's AI editor, in the user's voice ("ask me", "my recording"). Run it through the Descript MCP tools instead of carrying out the steps yourself. Markers such as `{{find-highlights}}` name techniques Underlord applies on its own.
+## Don't guess
 
-1. **Setup.** Ask the user the SET-UP questions one at a time, skipping any they've already answered.
-2. **Media.** Get the user's files into a project:
-   - New project: call `import_media` with a `project_name` and `add_compositions`, and show the user the returned `project_url`. If there's no media yet, pass `add_media: {}` to create an empty project.
-   - Existing project: find it with `search_drive` (or `list_projects`), check it with `get_project`, and import without `add_compositions` unless the user asks.
-   - URLs: pass them to `import_media` unchanged, including Google Drive and Dropbox share links.
-   - Local files: set `content_type` and `file_size` instead of `url`, then `PUT` the bytes to each returned `upload_url` with `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with `status: "failed"` and wait for that job to stop. If the host renders MCP Apps, `file_upload_ui` lets the user drop files instead. Use a `files` parameter only if `import_media` offers one. Never pass local or container paths such as `/mnt/data/...`; if nothing works, ask for a link Descript can fetch.
-   - Wait for the import with `wait_for_job` before the next step.
-3. **Hand off.** Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). In the prompt, ask Underlord to use its **Translate and dub** skill, say what the user wants, and include every setup answer so it doesn't ask again.
-4. **Wait.** Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as you go. A `-32001` timeout or `still_running` status means it's still working: poll the same `job_id` again and never resend the prompt.
-5. **Phases.** Underlord pauses between phases to show progress or ask a question. Pass its message to the user, then send their reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
-6. **Finish.** Confirm the result with `get_project` and share the `project_url`. To share the video, use the publish-project skill. For a transcript or subtitles, use export-transcript. To finish in another editor, use export-timeline.
+- Project and composition IDs: look them up with `search_drive` and `get_project`.
+- Share or download links: report only what `publish_project` returns.
+- Target languages: ask.
+- Don't carry out the editing steps with other tools. Underlord does the editing inside Descript.

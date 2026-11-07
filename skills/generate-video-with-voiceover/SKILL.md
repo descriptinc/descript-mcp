@@ -1,51 +1,73 @@
 ---
 name: generate-video-with-voiceover
-description: Create a narrated video from a script, a topic, or a voiceover recording, with AI voiceover, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo. For explainers, promos, product or seller profiles, and intros.
+description: Make a narrated explainer, promo, product video, or intro from a script, a topic, or a voiceover recording. Adds AI narration, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo.
 ---
 
-# Generate a video with voiceover
+# Generate a video with an avatar or voiceover
 
-# SET-UP
-Ask these questions one at a time, as succinctly as possible. Wait for an answer before asking the next.
-- Ask what kind of video I'm making (e.g. explainer, promo, seller/product profile, intro) — this sets the narrative structure ({{script-narratives}}), where I'm posting, and roughly how long it should be..
-- Ask how I want to narrate it: upload a voiceover recording, paste my own script, or generate a script from a topic.
-- Ask whether I'd like an avatar to present the video.
-- Ask whether to apply my brand — colors, logo — optional.
+Builds a narrated video from a voiceover recording, a script, or a topic, with an optional avatar presenter. The work runs in Descript through Underlord, Descript's AI editor. This skill gathers what Underlord needs, gets the media in, and relays the conversation.
 
-Once I've answered, proceed with the workflow.
+## When to use
 
-# WORKFLOW
+- The user wants an explainer, promo, product or seller profile, or intro video.
+- The user wants an AI avatar to present, or AI narration over visuals.
+- The user has a script or topic but no footage.
 
-Set up the narration based on what I provided:
-- If I uploaded a recording with speech, transcribe it and use it as the narration. Don't transcribe any b-roll.
-- If I pasted a script, add it to the script verbatim — don't rewrite it.
-- If I gave a topic only, write a script for the chosen use case — {{script-narratives}} — at the target length.
+Not for editing existing camera footage (use edit-talking-head-video) or animated stories (use generate-an-animated-story).
 
-- If I'm using AI narration, assign a voice — {{choose-voice}} — and generate the speech.
-- Add an avatar if I asked for one — {{avatar-workflows}}
-- Build scenes and layouts — {{choose-layouts}}
-- Fill any media placeholders — {{fill-broll}}
-- Apply my brand if I asked — {{apply-brand-kit}}
+## What to ask
 
-# INTERACTION
-Work through the workflow in phases and pause between them — don't run it start to finish in one go. At each major phase boundary (e.g. after the core content and structure, before styling, before audio), check that I'm happy before starting the next phase. Keep it a back-and-forth, not a single hand-off.
+Ask one question at a time, briefly.
 
----
+1. What kind of video it is (for example an explainer, promo, seller or product profile, or intro). This sets the narrative structure, where it will be posted, and roughly how long it should be.
+2. How to narrate it: upload a voiceover recording, paste their own script, or generate a script from a topic.
+3. Whether they'd like an avatar to present the video.
+4. Whether to apply their brand colors and logo (optional).
 
-After completing the workflow, offer a few follow-ups — e.g. translate it ({{→ Translate & dub}}), cut social clips ({{→ Create clips}}), or draft a publish package ({{→ Prepare for publish}}).
+## Get the media into Descript
 
-## Running this skill through Descript
+- **New project:** call `import_media` with a `project_name` and `add_compositions`, then share the returned `project_url`. If there's no media yet, pass `add_media: {}` to create an empty project.
+- **Existing project:** find it with `search_drive` (or `list_projects`), check it with `get_project`, and import without `add_compositions` unless the user asks.
+- **Links:** pass URLs to `import_media` unchanged, including Google Drive and Dropbox share links.
+- **Files on the user's device:** set `content_type` and `file_size` instead of `url`, then `PUT` the bytes to each returned `upload_url` with `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with `status: "failed"` and wait for that job to stop before retrying. If the host renders MCP Apps, `file_upload_ui` lets the user drop files instead. Use a `files` parameter only if `import_media` offers one. Never pass local or container paths such as `/mnt/data/...`; if nothing works, ask for a link Descript can fetch.
+- Wait for the import with `wait_for_job` before briefing Underlord.
 
-Everything above this section is the skill exactly as it appears in the Descript app. It is written for Underlord, Descript's AI editor, in the user's voice ("ask me", "my recording"). Run it through the Descript MCP tools instead of carrying out the steps yourself. Markers such as `{{find-highlights}}` name techniques Underlord applies on its own.
+## Brief Underlord
 
-1. **Setup.** Ask the user the SET-UP questions one at a time, skipping any they've already answered.
-2. **Media.** Get the user's files into a project:
-   - New project: call `import_media` with a `project_name` and `add_compositions`, and show the user the returned `project_url`. If there's no media yet, pass `add_media: {}` to create an empty project.
-   - Existing project: find it with `search_drive` (or `list_projects`), check it with `get_project`, and import without `add_compositions` unless the user asks.
-   - URLs: pass them to `import_media` unchanged, including Google Drive and Dropbox share links.
-   - Local files: set `content_type` and `file_size` instead of `url`, then `PUT` the bytes to each returned `upload_url` with `Content-Type: application/octet-stream`. If a `PUT` fails, call `report_upload_status` with `status: "failed"` and wait for that job to stop. If the host renders MCP Apps, `file_upload_ui` lets the user drop files instead. Use a `files` parameter only if `import_media` offers one. Never pass local or container paths such as `/mnt/data/...`; if nothing works, ask for a link Descript can fetch.
-   - Wait for the import with `wait_for_job` before the next step.
-3. **Hand off.** Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). In the prompt, ask Underlord to use its **Generate video with voiceover** skill, say what the user wants, and include every setup answer so it doesn't ask again.
-4. **Wait.** Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as you go. A `-32001` timeout or `still_running` status means it's still working: poll the same `job_id` again and never resend the prompt.
-5. **Phases.** Underlord pauses between phases to show progress or ask a question. Pass its message to the user, then send their reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
-6. **Finish.** Confirm the result with `get_project` and share the `project_url`. To share the video, use the publish-project skill. For a transcript or subtitles, use export-transcript. To finish in another editor, use export-timeline.
+Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). Use this brief, filled in with the user's answers. It names Underlord's matching skill and spells out the workflow, so it works whether or not that skill is available to the user.
+
+```text
+Use your "Generate video with voiceover" skill.
+Goal: Generate a narrated video.
+Setup answers: <every answer from the questions above>
+Workflow:
+- If the user uploaded a recording with speech, transcribe it and use it as the narration. Don't transcribe any b-roll.
+- If the user pasted a script, use it word for word; don't rewrite it.
+- If the user gave only a topic, write a script for the chosen kind of video at the target length.
+- If using AI narration, assign a voice and generate the speech.
+- Add an avatar if the user asked for one.
+- Build scenes and layouts.
+- Fill any media placeholders with b-roll.
+- Apply the brand if the user asked.
+```
+
+## Wait and relay
+
+- Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as it runs. A `-32001` timeout or a `still_running` status means it's still working: poll the same `job_id` again and never resend the brief.
+- Underlord works in phases and pauses at each major boundary (for example after the core content and structure, before styling, and before audio) to check the user is happy before moving on. Keep it a back-and-forth, not a single hand-off.
+- When Underlord pauses or asks something, pass its message to the user, including any images or links it shares. Send the reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
+
+## Finish
+
+Confirm the result with `get_project` and share the `project_url`. Then offer the follow-ups:
+
+- Translate it with translate-and-dub.
+- Cut social clips with create-clips.
+- A publish package: ask Underlord to use its **Prepare for publish** skill.
+
+## Don't guess
+
+- Project and composition IDs: look them up with `search_drive` and `get_project`.
+- Share or download links: report only what `publish_project` returns.
+- Don't rewrite a script the user pasted.
+- Don't carry out the editing steps with other tools. Underlord does the editing inside Descript.

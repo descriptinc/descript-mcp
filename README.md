@@ -10,16 +10,16 @@ The plugin ships skills for the workflows people use most. Each one asks a few s
 
 | Skill | What it does |
 | --- | --- |
-| `edit-talking-head-video` | Edit a talking-head video into a finished cut with AI: remove filler words and retakes, tighten the cut, and add scene layouts, lower-thirds, b-roll, and music. |
-| `generate-video-with-voiceover` | Create a narrated video from a script, a topic, or a voiceover recording, with AI voiceover, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo. |
-| `edit-podcast-recording` | Edit a podcast or interview into a finished episode with AI: remove filler words and retakes, trim pre-show setup, keep the active speaker on screen, and add lower-thirds, an intro, an outro, or music. |
-| `create-clips` | Turn a long video or podcast into short social clips for YouTube Shorts, TikTok, and Instagram Reels, with captions, the active speaker on screen, and 9:16, 1:1, or 16:9 framing. |
-| `translate-and-dub` | Translate a video into other languages with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices for each speaker. |
-| `turn-slides-into-video` | Turn a PDF slide deck into a narrated video, with one scene per slide, an AI voiceover written to flow across the whole presentation, and an optional AI avatar presenter. |
-| `generate-an-animated-story` | Generate an AI-animated video from a story idea, such as a movie-style trailer or an illustrated children's story. |
-| `publish-project` | Publish a Descript project to get a shareable link and a downloadable video or audio file. |
-| `export-transcript` | Export a Descript transcript as TXT, Markdown, HTML, RTF, or an SRT subtitle file, with optional speaker labels, markers, and timecodes. |
-| `export-timeline` | Export a Descript edit as a Premiere Pro, DaVinci Resolve, or Final Cut Pro XML, an EDL, an AAF, or an Adobe Audition session, to finish in another video editor or a DAW such as Pro Tools. |
+| `edit-talking-head-video` | Turn a raw camera recording into a finished video without editing it by hand. Removes retakes and filler words, tightens the cut, and adds scene layouts, lower-thirds, b-roll, and music. Made for vlogs, tutorials, YouTube videos, and other single-speaker recordings. |
+| `generate-video-with-voiceover` | Make a narrated explainer, promo, product video, or intro from a script, a topic, or a voiceover recording. Adds AI narration, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo. |
+| `edit-podcast-recording` | Turn a raw podcast or interview recording into a finished episode. Removes retakes, filler words, and pre-show setup, keeps the active speaker on screen, and adds lower-thirds plus an intro, outro, or music. Works with audio-only shows and video podcasts recorded on separate cameras or mics. |
+| `create-clips` | Turn a long podcast, interview, webinar, or livestream into short clips for YouTube Shorts, TikTok, and Instagram Reels. Finds the most interesting moments and cuts each one into its own clip with captions, the active speaker on screen, and 9:16, 1:1, or 16:9 framing. Audio-only episodes become audiograms. |
+| `translate-and-dub` | Reach viewers in other languages without re-recording. Translates a video into each language with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices matched to each speaker, and makes a separate version for every language. |
+| `turn-slides-into-video` | Turn a slide deck into a narrated video. Takes a PDF of the deck and builds one scene per slide, with an AI voiceover written to flow across the whole presentation and an optional AI avatar presenter. Made for presentations, pitch decks, lectures, and training slides. |
+| `generate-an-animated-story` | Generate an animated video from a story idea, like a movie-style trailer or an illustrated children's story. Creates the characters, locations, and an AI-generated clip for every scene in a realistic, cinematic, or illustrated style, with optional voiceover, music, and captions. |
+| `publish-project` | Share a finished Descript video or podcast. Publishes the project to a shareable link and a downloadable video or audio file. |
+| `export-transcript` | Get a transcript or subtitles from a Descript video or podcast. Exports TXT, Markdown, HTML, RTF, or an SRT subtitle file, with optional speaker labels, markers, and timecodes. |
+| `export-timeline` | Finish a Descript edit in Premiere Pro, DaVinci Resolve, Final Cut Pro, Audition, or Pro Tools. Exports the timeline as XML, EDL, AAF, or an Audition session, without the media files. |
 
 Skills load in Cursor, Claude Code, Codex, Antigravity, and the ChatGPT app. A bare MCP connection gets the tools but not the skills.
 
