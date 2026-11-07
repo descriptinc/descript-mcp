@@ -55,7 +55,8 @@ Workflow:
 
 - Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as it runs. A `-32001` timeout or a `still_running` status means it's still working: poll the same `job_id` again and never resend the brief.
 - Underlord pauses after the style image, the character cards, and the scene frames, and before generating the videos and audio, to show what changed and get approval. If the user asks to run it start to finish, tell Underlord to go straight through.
-- When Underlord pauses or asks something, pass its message to the user, including any images or links it shares. Send the reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
+- A finished job can hold a question or a check-in instead of the final result. Pass Underlord's message to the user, including any images or links it shares, and wait for their reply.
+- Send each reply with `prompt_project_agent` on the same project. Some accounts don't keep conversation history between calls, so include the original brief, the setup answers, what's done so far, and any composition IDs already created. Also pass the `conversation_id` if the last result returned one. Don't start a second job on the same composition while one is running.
 
 ## Finish
 

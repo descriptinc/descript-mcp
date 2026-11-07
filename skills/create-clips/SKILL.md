@@ -34,7 +34,7 @@ Ask one question at a time, briefly, and skip any the user has already answered.
 
 ## Brief Underlord
 
-Call `prompt_project_agent` with the `project_id` (and `composition_id` if the project has more than one composition). Use this brief, filled in with the user's answers. It names Underlord's matching skill and spells out the workflow, so it works whether or not that skill is available to the user.
+Check the source with `get_project`, then call `create_social_clips` with its `project_id` and the source `composition_id`. If the host doesn't list `create_social_clips`, use `prompt_project_agent` the same way. Either tool returns editable clip compositions, not rendered video files. Use this brief, filled in with the user's answers. It names Underlord's matching skill and spells out the workflow, so it works whether or not that skill is available to the user.
 
 ```text
 Use your "Create clips" skill.
@@ -53,7 +53,8 @@ Workflow:
 
 - Poll `wait_for_job` with `wait_seconds: 20` until the job finishes, sharing `progress.label` and `percent` as it runs. A `-32001` timeout or a `still_running` status means it's still working: poll the same `job_id` again and never resend the brief.
 - Underlord works in phases and pauses at each major boundary (for example after the core content and structure, before styling, and before audio) to check the user is happy before moving on. Keep it a back-and-forth, not a single hand-off. If the user asks to run it start to finish, tell Underlord to go straight through.
-- When Underlord pauses or asks something, pass its message to the user, including any images or links it shares. Send the reply with `prompt_project_agent` and the same `conversation_id`. Don't start a second job on the same composition while one is running.
+- A finished job can hold a question or a check-in instead of the final result. Pass Underlord's message to the user, including any images or links it shares, and wait for their reply.
+- Send each reply with `create_social_clips` on the same project. Some accounts don't keep conversation history between calls, so include the original brief, the setup answers, what's done so far, and any composition IDs already created. Also pass the `conversation_id` if the last result returned one. Don't start a second job on the same composition while one is running.
 
 ## Finish
 
