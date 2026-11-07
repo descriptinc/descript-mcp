@@ -10,6 +10,7 @@
   "homepage": "https://www.descript.com/mcp",
   "repository": "https://github.com/descriptinc/descript-mcp",
   "license": "Apache-2.0",
+  "privacyPolicyUrl": "https://www.descript.com/privacy",
   "keywords": [
     "descript",
     "underlord",
