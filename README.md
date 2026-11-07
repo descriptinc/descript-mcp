@@ -1,93 +1,122 @@
 # Descript MCP
 
-Edit video and audio by editing text. Import media, create projects, and use AI to edit — all from your agent.
+Edit video and audio from your AI agent. Descript turns your recording into a transcript, and you edit the video by editing the text. This plugin connects your agent to Descript so it can import media, edit with Underlord (Descript's AI co-editor), publish a share link, and export transcripts or timelines.
 
-## What's included
+It works with ChatGPT, Claude, Cursor, Claude Code, Codex, Antigravity, and any other MCP client.
 
-### MCP Server
+## What you can do
 
-Connects to the [Descript API](https://www.descript.com/api) over MCP, giving agents access to:
+The plugin ships skills for the workflows people use most. Each one asks a few setup questions, gets your media into Descript, and has Underlord do the editing.
 
-- **Discover** — `search_drive` finds projects, folders, media, layout packs, and transcript matches across the connected Drive; `list_projects` / `get_project` inspect projects and their compositions, media, and metadata; `list_folders` / `get_drive_info` browse folders and inspect a Drive
-- **Import** — `import_media` (via URL or direct file upload), `import_drive_media` (from a connected Google Drive), `file_upload_ui` (direct file uploads)
-- **Edit** — `prompt_project_agent` edits with Underlord, our AI co-editor, using natural language (trim, add captions, remove filler words, and so much more)
-- **Publish** — `publish_project` publishes a composition as a shareable link and exported video or audio
-- **Export** — `export_transcript` exports a project's transcript; `export_timeline` exports a Premiere Pro / DaVinci Resolve timeline
-- **Jobs** — `wait_for_job` / `list_jobs` / `cancel_job` track and manage async jobs; `report_upload_status` reports direct-upload progress
+| Skill | What it does |
+| --- | --- |
+| `edit-talking-head-video` | Turn a raw camera recording into a finished video without editing it by hand. Removes retakes and filler words, tightens the cut, and adds scene layouts, lower-thirds, b-roll, and music. Made for vlogs, tutorials, YouTube videos, and other single-speaker recordings. |
+| `generate-video-with-voiceover` | Make a narrated explainer, short documentary, promo, product video, or intro from a script, a topic, or a voiceover recording. Adds AI narration, an optional AI avatar presenter, scene layouts, b-roll, and brand colors and logo. |
+| `edit-podcast-recording` | Turn a raw podcast or interview recording into a finished episode. Removes retakes, filler words, and pre-show setup, keeps the active speaker on screen, and adds lower-thirds plus an intro, outro, or music. Works with audio-only shows and video podcasts recorded on separate cameras or mics. |
+| `create-clips` | Turn a long podcast, interview, webinar, or livestream into short clips for YouTube Shorts, TikTok, and Instagram Reels. Finds the most interesting moments and cuts each one into its own clip with captions, the active speaker on screen, and 9:16, 1:1, or 16:9 framing. Audio-only episodes become audiograms. |
+| `translate-and-dub` | Reach viewers in other languages without re-recording. Translates a video into each language with burned-in captions, an SRT subtitle file, or AI dubbing in native-sounding voices matched to each speaker, and makes a separate version for every language. |
+| `turn-slides-into-video` | Turn a slide deck into a narrated video. Takes a PDF of the deck and builds one scene per slide, with an AI voiceover written to flow across the whole presentation and an optional AI avatar presenter. Made for presentations, pitch decks, lectures, and training slides. |
+| `generate-an-animated-story` | Generate an animated video from a story idea, like a movie-style trailer or an illustrated children's story. Creates the characters, locations, and an AI-generated clip for every scene in a realistic, cinematic, or illustrated style, with optional voiceover, music, and captions. |
+| `publish-project` | Share a finished Descript video or podcast. Publishes the project to a shareable link and a downloadable video or audio file. |
+| `export-transcript` | Get a transcript or subtitles from a Descript video or podcast. Exports TXT, Markdown, HTML, RTF, or an SRT subtitle file, with optional speaker labels, markers, and timecodes. |
+| `export-timeline` | Finish a Descript edit in Premiere Pro, DaVinci Resolve, Final Cut Pro, Audition, or Pro Tools. Exports the timeline as XML, EDL, AAF, or an Audition session, without the media files. |
 
-Full tool reference and auth details: [Descript MCP docs](https://www.descript.com/mcp).
+Skills load in Cursor, Claude Code, Codex, Antigravity, and the ChatGPT app. A bare MCP connection gets the tools but not the skills.
 
-### Rules / context
+### Tools
 
-Bundles a `descript-workflows` rule with best practices for working with the Descript tools: find items with `search_drive` (or paginate projects with `list_projects`) before editing, inspect with `get_project`, pass media URLs to `import_media` as-is, use `prompt_project_agent` for natural-language edits, and always follow the async tools (`import_media`, `prompt_project_agent`, `publish_project`) with `wait_for_job`.
+Under the skills, the MCP server gives your agent these tools:
 
-The rule is Cursor-format (`rules/descript-workflows.mdc`). Antigravity reads the same guidance from `AGENTS.md` at the repo root. Claude Code has no rules concept, so it relies on the bundled skills for the same workflows.
+- **Find things:** `search_drive` searches projects, folders, media, layout packs, and transcripts in your Drive. `list_projects`, `get_project`, `list_folders`, and `get_drive_info` browse and inspect them.
+- **Import media:** `import_media` imports from a URL or a direct file upload. `import_drive_media` imports from a connected Google Drive. `file_upload_ui` shows an upload widget in hosts that support MCP Apps.
+- **Edit:** `prompt_project_agent` sends a natural-language request to Underlord, which can trim, add captions, remove filler words, and much more.
+- **Publish and export:** `publish_project`, `export_transcript`, and `export_timeline`.
+- **Track jobs:** imports, edits, and publishes run as background jobs. `wait_for_job`, `list_jobs`, and `cancel_job` manage them, and `report_upload_status` reports on direct uploads.
 
-### Skills
+The full tool reference is in the [Descript MCP docs](https://www.descript.com/mcp).
 
-- **create-video** — Create a new project from media files or URLs
-- **edit-project** — Edit an existing project using AI-powered natural language
-- **publish-project** — Publish a composition to create a shareable link and exported video or audio file
-- **export-transcript** — Export a project's transcript as a downloadable file
-- **export-timeline** — Export a project's timeline for Premiere Pro or DaVinci Resolve
+### Workflow rule
 
-## Setup
+The plugin also includes a `descript-workflows` rule with best practices for the tools. For example, it tells the agent to find a project before editing it, pass media URLs to `import_media` unchanged, and wait for every background job to finish. Cursor reads it from `rules/descript-workflows.mdc` and Antigravity from `AGENTS.md`. Claude Code has no rules, so the skills carry the same guidance there.
 
-The Descript MCP authenticates with OAuth — no API token. On first connection you sign in to Descript and pick the [Drive](https://help.descript.com/descript-tour/drive-view) the agent can access. To switch Drives later, log out of Descript on the web and reconnect.
+## Install
 
-Install from an official marketplace listing only: let it register the server, sign in with OAuth, pick a Drive, then confirm the connection with `get_drive_info`. Don't also add a second, custom Descript MCP server by hand — a duplicate connection means conflicting sessions.
-
-Every MCP client points at the same remote server:
+Every client connects to the same server:
 
 ```
 https://api.descript.com/v2/mcp
 ```
 
-Quick-install steps differ by harness.
+Sign-in uses OAuth, so you don't need an API token. The first time the server connects, you sign in to Descript and pick the [Drive](https://help.descript.com/descript-tour/drive-view) your agent can use. To switch Drives later, log out of Descript on the web and reconnect. Once connected, ask your agent to run `get_drive_info` to confirm it worked.
+
+Install either the full plugin or the bare server, not both. Two Descript connections in the same client cause conflicting sessions.
+
+### ChatGPT and Claude
+
+Descript has official listings in both apps, so there's no server URL to enter:
+
+- **ChatGPT:** add the Descript app from the [ChatGPT app directory](https://chatgpt.com/apps/descript/asdk_app_69f0dc45f6048191876c14c1016fe778). See [Connect Descript to ChatGPT](https://help.descript.com/api-and-mcp/mcp-chatgpt).
+- **Claude:** add Descript from the [Claude connector directory](https://claude.ai/directory/connectors/descript). See [Connect Descript to Claude](https://help.descript.com/api-and-mcp/mcp-claude).
 
 ### Cursor
 
-This repo is a Cursor plugin, so installing it brings the MCP server, the `descript-workflows` rule, and the skills together.
+Install this repo as a Cursor plugin, from the plugin marketplace or by pointing Cursor at the repository. Cursor sets up the `descript` MCP server, the workflow rule, and the skills.
 
-1. Add this plugin to Cursor (from the plugin marketplace, or by pointing Cursor at this repository).
-2. Cursor registers the `descript` MCP server, rule, and skills.
-3. When the server first connects, sign in to Descript and choose a Drive.
-
-One-click alternative: open **Settings → Descript MCP** in the Descript app and use the **Cursor** connect button, or install the MCP server with a deep link:
+To install only the MCP server, use the **Cursor** button under **Settings → Descript MCP** in the Descript app, or open this deep link:
 
 ```
 cursor://anysphere.cursor-deeplink/mcp/install?name=Descript&config=eyJ1cmwiOiJodHRwczovL2FwaS5kZXNjcmlwdC5jb20vdjIvbWNwIn0=
 ```
 
-The deep link installs only the MCP server; the rule and skills come from the plugin.
-
 ### Claude Code
 
-This repo is also a Claude Code plugin, so installing it brings the MCP server and the skills together. Add the repo as a marketplace, then install the plugin:
+Add this repo as a marketplace, then install the plugin:
 
 ```
 /plugin marketplace add descriptinc/descript-mcp
 /plugin install descript@descript
 ```
 
-Claude Code registers the `descript` MCP server and auto-discovers the skills. When the server first connects, sign in to Descript and choose a Drive.
+Claude Code sets up the `descript` MCP server and finds the skills on its own.
 
-If you only want the server without the skills, add it on its own:
+To add only the server, without the skills:
 
 ```
 claude mcp add --transport http descript https://api.descript.com/v2/mcp
 ```
 
-The `descript-workflows` rule is Cursor-format and does not load in Claude Code; the same guidance is carried by the bundled skills.
+### Codex
+
+This repo is a Codex plugin marketplace with one plugin, `descript`. Add the marketplace from GitHub, then install the plugin:
+
+```
+codex plugin marketplace add descriptinc/descript-mcp --ref main
+codex plugin add descript@descript
+```
+
+To install from a local checkout, pass its absolute path instead:
+
+```
+codex plugin marketplace add /absolute/path/to/checkout
+codex plugin add descript@descript
+```
+
+To update a GitHub install, refresh the marketplace:
+
+```
+codex plugin marketplace upgrade descript
+```
+
+For a local checkout, `git pull` alone doesn't update the copy Codex installed. Reinstall the plugin after you pull.
 
 ### Antigravity
 
-Google's [Antigravity](https://antigravity.google) reads project context straight from this repo — no install step. Open the repo as your Antigravity workspace and it picks up the `AGENTS.md` workflow guidance at the root. Antigravity also reads the same `SKILL.md` format as Claude Code, so the bundled skills apply there too.
+[Antigravity](https://antigravity.google) needs no install for the skills and workflow guidance. Open this repo as your workspace and it reads `AGENTS.md` and the `SKILL.md` files.
 
-The MCP server is added separately, in Antigravity's own config. Antigravity does not reliably load an MCP server from a repo-committed file — project-local `mcpServers` are currently discovered but ignored, so the server has to live in the user-level config, added through the UI:
+Add the MCP server yourself in your user-level config. Antigravity currently ignores MCP servers defined in a project's files.
 
-1. In the Agent panel, open the `...` (Additional Options) menu → **MCP Servers** → **Manage MCP Servers** → **View raw config**.
-2. Add the `descript` server under `mcpServers`. Antigravity uses the `serverUrl` key for remote HTTP servers (not `url`):
+1. In the Agent panel, open the **...** menu, then **MCP Servers** → **Manage MCP Servers** → **View raw config**.
+2. Add the server under `mcpServers`. Antigravity uses `serverUrl` for remote servers, not `url`:
 
    ```json
    {
@@ -99,78 +128,41 @@ The MCP server is added separately, in Antigravity's own config. Antigravity doe
    }
    ```
 
-3. Save, then reconnect. When the server first connects, sign in to Descript and choose a Drive.
+3. Save and reconnect.
 
-The raw config file lives under your home directory (`~/.gemini/config/mcp_config.json` on recent builds; older builds used `~/.gemini/antigravity/mcp_config.json`) — using **View raw config** avoids depending on the exact path.
-
-### Codex
-
-This repo is a Codex plugin marketplace (`.agents/plugins/marketplace.json`) whose single plugin, `descript`, is the repo root. Installing it brings the `descript` MCP server (from `mcp.json`) and the skills together.
-
-From GitHub, add the marketplace, then install the plugin:
-
-```
-codex plugin marketplace add descriptinc/descript-mcp --ref main
-codex plugin add descript@descript
-```
-
-From a local checkout, add the marketplace by its absolute path, then install the same way:
-
-```
-codex plugin marketplace add /absolute/path/to/checkout
-codex plugin add descript@descript
-```
-
-To update a GitHub-sourced install, refresh the marketplace's Git snapshot:
-
-```
-codex plugin marketplace upgrade descript
-```
-
-Running `git pull` in a local checkout changes the files on disk but does not by itself refresh the plugin copy Codex has installed; reinstall the plugin after updating the checkout.
-
-The plugin authenticates on install: sign in to Descript and choose the [Drive](https://help.descript.com/descript-tour/drive-view) the agent can access. To switch Drives later, log out of Descript on the web and reconnect.
-
-If you only want the tools without the skills, add just the bare MCP server pointed at `https://api.descript.com/v2/mcp` with OAuth. Install the complete plugin **or** add the bare server — not both. A second, hand-added Descript server alongside the plugin's means two connections and conflicting sessions.
+**View raw config** opens the right file for your build. On recent builds it's `~/.gemini/config/mcp_config.json`; older builds used `~/.gemini/antigravity/mcp_config.json`.
 
 ### Other MCP clients
 
-Any other MCP client works by adding the remote server on its own — a remote (HTTP) server pointed at `https://api.descript.com/v2/mcp` with OAuth. See [Connect Descript to any AI assistant](https://help.descript.com/api-and-mcp/mcp-custom) for the general flow. The `descript-workflows` rule and the skills in this repo are harness-specific bundle content and don't travel with a bare MCP connection.
-
-### Claude and ChatGPT
-
-Descript ships official connectors in both directories — no server URL needed:
-
-- **Claude** — add **Descript** from the [Anthropic connector directory](https://claude.ai/directory/connectors/descript). See [Connect Descript to Claude](https://help.descript.com/api-and-mcp/mcp-claude).
-- **ChatGPT** — add the Descript app from the [ChatGPT app marketplace](https://chatgpt.com/apps/descript/asdk_app_69f0dc45f6048191876c14c1016fe778). See [Connect Descript to ChatGPT](https://help.descript.com/api-and-mcp/mcp-chatgpt).
+Add a remote (HTTP) server pointed at `https://api.descript.com/v2/mcp` with OAuth. [Connect Descript to any AI assistant](https://help.descript.com/api-and-mcp/mcp-custom) walks through it. You get the tools, but the skills and workflow rule only load in the clients above.
 
 ### Official sources
 
-Only the published server endpoint (`https://api.descript.com/v2/mcp`) and Descript's official marketplace listings — the ChatGPT app, the Claude connector, and the Cursor plugin linked above — are official. Any other listing, connector, or fork is not affiliated with or endorsed by Descript.
+The only official Descript sources are the server at `https://api.descript.com/v2/mcp` and the listings linked above: the ChatGPT app, the Claude connector, and the Cursor plugin. Other listings, connectors, and forks aren't affiliated with or endorsed by Descript.
 
 ## Requirements
 
 - A [Descript](https://www.descript.com) account
-- An agent harness with MCP support
+- An AI agent or app that supports MCP
 
 ## Development
 
 ```
 npm install
-npm run check   # lint, format check, and plugin validation
+npm run check   # lint, format check, tests, and plugin validation
 npm run fmt     # apply formatting
 ```
 
-CI runs the same checks on every pull request. `npm run validate` covers the Cursor manifest, the portable / OpenAI manifest and skill dependencies, and MCP endpoint consistency; `npm test` runs the validator's regression tests; `npm run check` runs lint, format checks, tests, and validation.
+CI runs `npm run check` on every pull request. Within it, `npm run validate` checks the Cursor manifest, the portable and OpenAI manifest, each skill's dependencies, and that the server URL matches everywhere. `npm test` runs the validator's tests.
 
-Maintainers: see [RELEASE.md](RELEASE.md) for how the OpenAI (ChatGPT) listing is refreshed from this repo and how direct installs ship, including the package-identity rules.
+Maintainers: [RELEASE.md](RELEASE.md) covers how direct installs ship and how to refresh the ChatGPT listing from this repo without breaking its package identity.
 
-This repository is source-available under the included license. We are not currently accepting external code contributions or pull requests.
+This repository is source-available under the included license. We aren't accepting external contributions or pull requests.
 
 ## License and legal
 
 Licensed under the [Apache License 2.0](LICENSE).
 
-Descript's names, logos, and brand features are trademarks — see [TRADEMARKS.md](TRADEMARKS.md) for what you may and may not do with them.
+Descript's names, logos, and brand features are trademarks. See [TRADEMARKS.md](TRADEMARKS.md) for how you can and can't use them.
 
 Use of the hosted Descript MCP server and API is subject to Descript's [Terms of Service](https://www.descript.com/terms).
