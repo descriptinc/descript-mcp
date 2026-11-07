@@ -10,6 +10,7 @@
   "homepage": "https://www.descript.com/mcp",
   "repository": "https://github.com/descriptinc/descript-mcp",
   "license": "Apache-2.0",
+  "privacyPolicyUrl": "https://www.descript.com/privacy",
   "keywords": [
     "descript",
     "underlord",
@@ -28,5 +29,10 @@
     "ai",
     "mcp"
   ],
-  "mcpServers": "./mcp.json"
+  "mcpServers": {
+    "descript": {
+      "type": "http",
+      "url": "https://api.descript.com/v2/mcp/claude"
+    }
+  }
 }
