@@ -70,12 +70,12 @@ This repo is also a Claude Code plugin, so installing it brings the MCP server a
 /plugin install descript@descript
 ```
 
-Claude Code registers the `descript` MCP server and auto-discovers the skills. When the server first connects, sign in to Descript and choose a Drive.
+Claude Code registers the `descript` MCP server and auto-discovers the skills. Claude clients use the Claude endpoint, `https://api.descript.com/v2/mcp/claude`, the same one as the Claude directory connector. When the server first connects, sign in to Descript and choose a Drive.
 
 If you only want the server without the skills, add it on its own:
 
 ```
-claude mcp add --transport http descript https://api.descript.com/v2/mcp
+claude mcp add --transport http descript https://api.descript.com/v2/mcp/claude
 ```
 
 The `descript-workflows` rule is Cursor-format and does not load in Claude Code; the same guidance is carried by the bundled skills.
@@ -146,7 +146,7 @@ Descript ships official connectors in both directories — no server URL needed:
 
 ### Official sources
 
-Only the published server endpoint (`https://api.descript.com/v2/mcp`) and Descript's official marketplace listings — the ChatGPT app, the Claude connector, and the Cursor plugin linked above — are official. Any other listing, connector, or fork is not affiliated with or endorsed by Descript.
+Only the published server endpoints (`https://api.descript.com/v2/mcp`, and `https://api.descript.com/v2/mcp/claude` for Claude clients) and Descript's official marketplace listings — the ChatGPT app, the Claude connector, and the Cursor plugin linked above — are official. Any other listing, connector, or fork is not affiliated with or endorsed by Descript.
 
 ## Requirements
 
